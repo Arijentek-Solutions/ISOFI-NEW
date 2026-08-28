@@ -1,0 +1,16 @@
+<svg width="43" height="41" viewBox="0 0 43 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rounded white background card -->
+  <rect width="42.4" height="40.5" rx="5.062" fill="white" />
+  
+  <!-- Outer corner brackets (Group1) translated by (3.52, 3.48) -->
+  <g transform="translate(3.52, 3.48)">
+    <path d="M11.9627 3.2143H3.21383V11.9656H-0.000732422V0H11.9627V3.2143Z" fill="#0F0F11"/>
+    <path d="M35.3548 21.6095V33.5751H23.3914V30.36H32.141V21.6095H35.3548Z" fill="#0F0F11"/>
+  </g>
+  
+  <!-- Central logo core (Group2) translated by (12.26, 12.22) -->
+  <g transform="translate(12.26, 12.22)">
+    <path d="M3.21574 16.0956H-0.00146484V14.665L14.6564 0H17.8737V1.43057L3.21574 16.0956Z" fill="#D01919"/>
+    <path d="M14.6556 16.0956L3.21574 4.6502V16.0956H-0.00146484V0H3.21574L14.6556 11.4462V0H17.8737V16.0956H14.6556Z" fill="#0F0F11"/>
+  </g>
+</svg>

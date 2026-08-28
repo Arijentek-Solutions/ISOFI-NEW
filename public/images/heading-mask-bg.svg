@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <radialGradient id="glowRed" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#FF2E2E" />
+      <stop offset="40%" stop-color="#D01919" />
+      <stop offset="80%" stop-color="#140202" />
+      <stop offset="100%" stop-color="#050505" />
+    </radialGradient>
+    <linearGradient id="cyberSheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="25%" stop-color="#D01919" stop-opacity="0.95" />
+      <stop offset="60%" stop-color="#080808" stop-opacity="0.98" />
+      <stop offset="100%" stop-color="#D01919" stop-opacity="0.85" />
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  
+  <!-- Base gradient -->
+  <rect width="1920" height="1080" fill="url(#glowRed)" />
+  
+  <!-- Grid texture overlay -->
+  <rect width="1920" height="1080" fill="url(#grid)" />
+  
+  <!-- Dynamic cyber light sweeps -->
+  <path d="M-200,900 Q800,200 2100,500" stroke="#FF4D4D" stroke-width="120" fill="none" opacity="0.6" filter="blur(40px)" />
+  <path d="M-100,200 Q1000,800 2000,100" stroke="#D01919" stroke-width="180" fill="none" opacity="0.7" filter="blur(60px)" />
+  <rect width="1920" height="1080" fill="url(#cyberSheen)" mix-blend-mode="overlay" opacity="0.85" />
+</svg>
