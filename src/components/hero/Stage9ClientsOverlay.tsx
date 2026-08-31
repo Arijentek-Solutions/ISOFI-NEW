@@ -86,15 +86,91 @@ export const Stage9ClientsOverlay = forwardRef<
       style={{ visibility: "hidden" }}
       className="absolute inset-0 pointer-events-none w-full h-full flex flex-col justify-between z-30 overflow-hidden select-none"
     >
-      {/* 1. Pure Solid Black Background (Orange glow removed) */}
+      {/* 1. Pure Solid Black Background */}
       <div className="absolute inset-0 bg-[#000000] -z-30 pointer-events-none" />
 
-      {/* Top Header Clearance */}
-      <div className="w-full h-[70px] sm:h-[90px] pointer-events-none" />
+      {/* ========================================================================= */}
+      {/* MOBILE SCREEN LAYOUT (md:hidden) — Pure Mobile View                       */}
+      {/* ========================================================================= */}
+      <div className="flex md:hidden relative z-20 w-full h-full flex-col justify-between pt-16 pb-8 px-4 pointer-events-auto overflow-y-auto">
+        {/* Top Headline & Subtitle */}
+        <div className="w-full text-center flex flex-col items-center select-none">
+          <h2 className="font-['Funnel_Display',sans-serif] font-semibold text-white tracking-tight text-[26px] xs:text-[30px] leading-[1.08]">
+            Inspired by the <br />
+            needs of our clients.
+          </h2>
+          <p className="font-[family-name:var(--font-onest)] font-light text-zinc-400 text-[12px] xs:text-[13px] leading-relaxed max-w-[340px] mx-auto mt-2">
+            Wisdom new and valley answer. Contented it so is discourse recommend. Man its upon him call mile. An pasture he himself believe ferrars besides cottage.
+          </p>
+        </div>
 
-      {/* Main Container - Shifted up for optimal visual balance */}
-      <div className="relative z-20 w-full max-w-[1720px] mx-auto px-6 sm:px-10 md:px-16 lg:px-[82px] flex-1 flex flex-col justify-between -translate-y-8 sm:-translate-y-12 lg:-translate-y-14">
-        
+        {/* 6 Client Logos Grid (3 Columns x 2 Rows) */}
+        <div className="w-full max-w-[340px] mx-auto my-4 grid grid-cols-3 gap-3 items-center justify-items-center">
+          {CLIENT_LOGOS.map((client) => (
+            <div
+              key={client.id}
+              className="relative flex items-center justify-center p-2 rounded-xl"
+            >
+              <Image
+                src={client.src}
+                alt={client.alt}
+                width={client.width}
+                height={client.height}
+                className="h-10 w-auto object-contain pointer-events-none select-none"
+                priority
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom Client Testimonial Card */}
+        <div className="w-full max-w-[340px] mx-auto bg-[#0b0a0e]/90 border border-white/10 rounded-[20px] p-4 shadow-2xl backdrop-blur-md">
+          {/* Red Quote Mark */}
+          <div className="text-[#D91E1E] text-2xl leading-none font-serif mb-1">
+            “
+          </div>
+
+          {/* Testimonial Quote */}
+          <p className="font-['Funnel_Display',sans-serif] font-medium text-white text-[13.5px] leading-[1.35] tracking-tight">
+            &quot;Isofiniti Didn&apos;t Just Build A Website; They Re-Architected Our Entire Digital Presence. Our Conversion Rates Doubled Within The First Quarter Of Deployment.&quot;
+          </p>
+
+          {/* Author Profile Footer */}
+          <div className="flex items-center gap-2.5 mt-3 pt-2.5 border-t border-white/5">
+            {/* Avatar Circle */}
+            <div className="w-8 h-8 rounded-full bg-[#D91E1E] flex items-center justify-center text-white font-bold text-xs tracking-wider shrink-0 shadow-lg">
+              E.V
+            </div>
+
+            {/* Author Name & Title */}
+            <div className="flex flex-col text-left">
+              <div className="flex items-center gap-1">
+                <span className="font-['Funnel_Display',sans-serif] font-bold text-white text-[12px] tracking-wide uppercase">
+                  E. VANCE
+                </span>
+                <svg
+                  className="w-3 h-3 text-[#D91E1E] fill-current"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <span className="font-[family-name:var(--font-onest)] font-medium text-zinc-400 text-[10px] tracking-wider uppercase">
+                CEO, TECHLOGIX
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* PC / DESKTOP SCREEN LAYOUT (hidden md:flex) — 100% UNTOUCHED ORIGINAL     */}
+      {/* ========================================================================= */}
+      <div className="hidden md:flex relative z-20 w-full max-w-[1720px] mx-auto px-6 sm:px-10 md:px-16 lg:px-[82px] flex-1 flex-col justify-between -translate-y-8 sm:-translate-y-12 lg:-translate-y-14 pt-[90px]">
         {/* Center Showcase Content: Headline & Descriptive Narrative */}
         <div className="w-full max-w-[1400px] mx-auto text-center flex-1 flex flex-col items-center justify-center pointer-events-auto">
           {/* Main Headline */}
@@ -150,7 +226,6 @@ export const Stage9ClientsOverlay = forwardRef<
             ))}
           </div>
         </div>
-
       </div>
     </div>
   );

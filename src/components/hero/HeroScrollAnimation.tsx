@@ -14,6 +14,7 @@ import { Stage8PointOfViewOverlay } from "./Stage8PointOfViewOverlay";
 import { Stage9ClientsOverlay } from "./Stage9ClientsOverlay";
 import { Stage10WovenLightOverlay } from "./Stage10WovenLightOverlay";
 import { ScrollHintIndicator } from "./ScrollHintIndicator";
+import MobileFloatingCardsBg from "./MobileFloatingCardsBg";
 
 // Re-export constants for external consumer compatibility
 export { SECTION_STEPS };
@@ -22,6 +23,7 @@ export function HeroScrollAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stage1TextRef = useRef<HTMLDivElement>(null);
+  const mobileBgRef = useRef<HTMLDivElement>(null);
   const stage2ContainerRef = useRef<HTMLDivElement>(null);
   const stage3ContainerRef = useRef<HTMLDivElement>(null);
   const stage4ContainerRef = useRef<HTMLDivElement>(null);
@@ -66,9 +68,13 @@ export function HeroScrollAnimation() {
   const animationFrameIdRef = useRef<number | null>(null);
   const isAnimatingLockRef = useRef(false);
   const lockTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const eruptionPlayedRef = useRef(false);
 
-  // Preload all frames
+  // Preload all frames on desktop only to optimize mobile performance
   useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      return;
+    }
     let isMounted = true;
     const images: HTMLImageElement[] = [];
     let count = 0;
@@ -305,6 +311,25 @@ export function HeroScrollAnimation() {
       renderFrame(frameToDraw);
 
       // ----------------------------------------------------
+      // STICKY NAVBAR MANAGEMENT: Hide on Stage 7, Show on all other stages
+      // ----------------------------------------------------
+      const navEl = document.getElementById("global-navbar");
+      if (navEl) {
+        const isStage7 = p >= 0.91 && p <= 1.39;
+        if (isStage7) {
+          navEl.style.opacity = "0";
+          navEl.style.pointerEvents = "none";
+          navEl.style.transform = "translate3d(0, -100%, 0)";
+          navEl.style.visibility = "hidden";
+        } else {
+          navEl.style.opacity = "1";
+          navEl.style.pointerEvents = "auto";
+          navEl.style.transform = "translate3d(0, 0, 0)";
+          navEl.style.visibility = "visible";
+        }
+      }
+
+      // ----------------------------------------------------
       // A. CANVAS FADE OUT: p = 0.14 -> 0.22
       // ----------------------------------------------------
       if (canvasRef.current) {
@@ -321,209 +346,272 @@ export function HeroScrollAnimation() {
       // B. STAGE 1 TYPOGRAPHY ("INNOVATIVE TECH / INFINITE GROWTH")
       // ----------------------------------------------------
       if (stage1TextRef.current) {
-        const inP = clamp(p, 0.03, 0.14);
-        const outP = clamp(p, 0.14, 0.22);
-        const opacity = inP * (1 - outP) * whiteExitOpacity;
-        const translateY = (1 - inP) * 30 - outP * 30 + whiteExitY;
-        const s1Active = p <= 0.24;
+        const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+        if (isMobile) {
+          // On mobile: Stage 1 clears out smoothly before Stage 2 arrives (p: 0.11 -> 0.16)
+          const s1FadeOut = clamp((p - 0.11) / 0.05, 0, 1);
+          const s1Opacity = 1 - s1FadeOut;
+          const s1Active = p <= 0.16;
+          stage1TextRef.current.style.opacity = s1Opacity.toFixed(3);
+          stage1TextRef.current.style.transform = "translate3d(0, 0, 0)";
+          stage1TextRef.current.style.pointerEvents = s1Opacity > 0.1 ? "auto" : "none";
+          stage1TextRef.current.style.visibility = s1Active ? "visible" : "hidden";
+        } else {
+          const inP = clamp(p, 0.03, 0.14);
+          const outP = clamp(p, 0.14, 0.22);
+          const opacity = inP * (1 - outP) * whiteExitOpacity;
+          const translateY = (1 - inP) * 30 - outP * 30 + whiteExitY;
+          const s1Active = p <= 0.24;
 
-        stage1TextRef.current.style.opacity = opacity.toFixed(3);
-        stage1TextRef.current.style.transform = `translate3d(0, ${translateY.toFixed(
-          2
-        )}px, 0)`;
-        stage1TextRef.current.style.pointerEvents =
-          opacity > 0.1 ? "auto" : "none";
-        stage1TextRef.current.style.visibility =
-          s1Active ? "visible" : "hidden";
+          stage1TextRef.current.style.opacity = opacity.toFixed(3);
+          stage1TextRef.current.style.transform = `translate3d(0, ${translateY.toFixed(
+            2
+          )}px, 0)`;
+          stage1TextRef.current.style.pointerEvents =
+            opacity > 0.1 ? "auto" : "none";
+          stage1TextRef.current.style.visibility =
+            s1Active ? "visible" : "hidden";
+        }
+      }
+
+      // Mobile Stationary Background Floating Cards (p: 0.16 -> 0.90, softly blurred ONLY on Video Showcase page)
+      if (mobileBgRef.current) {
+        const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+        if (isMobile) {
+          const bgInP = clamp((p - 0.16) / 0.04, 0, 1);
+          const bgOutP = clamp((p - 0.86) / 0.04, 0, 1);
+          const bgActive = p >= 0.16 && p <= 0.90;
+
+          // Blur ONLY on Video Showcase page (p >= 0.61 && p < 0.84). Stages 2, 3, and 4 stay 100% crisp with zero blur.
+          const isVideoPage = p >= 0.61 && p < 0.84;
+          const convergeP = clamp((p - 0.84) / 0.04, 0, 1);
+          const convergeEased = easeInOutSmooth(convergeP);
+
+          const targetOpacity = bgInP * (1 - bgOutP) * (isVideoPage ? 0.65 : 1.0) * (1 - convergeEased);
+
+          mobileBgRef.current.style.opacity = targetOpacity.toFixed(3);
+          mobileBgRef.current.style.visibility = bgActive ? "visible" : "hidden";
+          mobileBgRef.current.style.filter = isVideoPage ? "blur(5px)" : "none";
+
+          if (convergeP > 0) {
+            const scale = 1.0 - convergeEased * 0.5;
+            mobileBgRef.current.style.transform = `scale(${scale.toFixed(3)})`;
+          } else {
+            mobileBgRef.current.style.transform = "none";
+          }
+        } else {
+          mobileBgRef.current.style.visibility = "hidden";
+        }
       }
 
       // ----------------------------------------------------
       // C. STAGE 2 ("YOUR BUSINESS HAS A LOT GOING ON...")
       // ----------------------------------------------------
       if (stage2ContainerRef.current) {
-        // 1. Stage 2 Headline: Letter-by-Letter Zoom-Out (in: 0.18 -> 0.26, out: 0.28 -> 0.34)
-        const charElements = stage2ContainerRef.current.querySelectorAll(
-          "[data-headline-char]"
-        );
-        const s2ExitP = clamp(p, 0.28, 0.34);
-        const s2ExitY = s2ExitP * -30;
-        const s2ExitOpacity = (1 - s2ExitP) * whiteExitOpacity;
-        const s2Active = p >= 0.16 && p <= 0.90;
+        const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+        if (isMobile) {
+          // On mobile: Stage 2 enters ONLY AFTER Stage 1 has fully cleared (p: 0.16 -> 0.22)
+          const s2InP = clamp((p - 0.16) / 0.06, 0, 1);
+          const s2OutP = clamp((p - 0.27) / 0.06, 0, 1);
+          const s2Opacity = s2InP * (1 - s2OutP);
+          const s2Active = p >= 0.16 && p <= 0.34;
 
-        stage2ContainerRef.current.style.opacity = "1";
-        stage2ContainerRef.current.style.visibility =
-          s2Active ? "visible" : "hidden";
-        stage2ContainerRef.current.style.pointerEvents =
-          s2Active && p <= 0.34 ? "auto" : "none";
+          stage2ContainerRef.current.style.opacity = s2Opacity.toFixed(3);
+          stage2ContainerRef.current.style.transform = "translate3d(0, 0, 0)";
+          stage2ContainerRef.current.style.visibility = s2Active ? "visible" : "hidden";
+          stage2ContainerRef.current.style.pointerEvents = s2Active && s2Opacity > 0.3 ? "auto" : "none";
 
-        if (charElements && charElements.length > 0) {
-          const totalChars = charElements.length;
-          const hP = clamp(p, 0.18, 0.26);
-
-          charElements.forEach((el, index) => {
+          const charElements = stage2ContainerRef.current.querySelectorAll("[data-headline-char]");
+          charElements.forEach((el) => {
             const charEl = el as HTMLElement;
-            const charStart = (index / totalChars) * 0.65;
-            const charEnd = Math.min(1, charStart + 0.35);
-            const charProgress = clamp(hP, charStart, charEnd);
-
-            const scale = 1.22 - charProgress * 0.22;
-            const entryOpacity = Math.min(1, charProgress * 1.6);
-            const finalOpacity = entryOpacity * s2ExitOpacity;
-            const translateY =
-              (1 - charProgress) * -10 + s2ExitY + whiteExitY;
-            const blur = (1 - charProgress) * 2.5;
-
-            const r = Math.round(15 + (1 - charProgress) * 193);
-            const g = Math.round(15 + (1 - charProgress) * 10);
-            const b = Math.round(15 + (1 - charProgress) * 10);
-
-            charEl.style.opacity = finalOpacity.toFixed(3);
-            charEl.style.transform = `translate3d(0, ${translateY.toFixed(
-              1
-            )}px, 0) scale(${scale.toFixed(3)})`;
-            charEl.style.filter =
-              blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : "none";
-            charEl.style.color = `rgb(${r}, ${g}, ${b})`;
+            charEl.style.opacity = s2InP > 0.1 ? "1" : "0";
+            charEl.style.transform = "none";
+            charEl.style.color = "rgb(15, 15, 15)";
           });
-        }
 
-        // 2. Stage 2 Narrative Copy (in: 0.20 -> 0.26, out: 0.28 -> 0.34)
-        const narrativeEl = stage2ContainerRef.current.querySelector(
-          "[data-stage2-narrative]"
-        ) as HTMLElement;
-        if (narrativeEl) {
-          const nInP = clamp(p, 0.2, 0.26);
-          const nOutP = clamp(p, 0.28, 0.34);
-          const nOpacity = nInP * (1 - nOutP) * whiteExitOpacity;
-          const nY = (1 - nInP) * 30 - nOutP * 30 + whiteExitY;
-          narrativeEl.style.opacity = nOpacity.toFixed(3);
-          narrativeEl.style.transform = `translate3d(0, ${nY.toFixed(2)}px, 0)`;
-        }
+          const narrativeEl = stage2ContainerRef.current.querySelector("[data-stage2-narrative]") as HTMLElement;
+          if (narrativeEl) {
+            narrativeEl.style.opacity = s2InP > 0.1 ? "1" : "0";
+            narrativeEl.style.transform = "none";
+          }
+        } else {
+          // Desktop animation logic: Headline chars zoom out & narrative fade
+          const charElements = stage2ContainerRef.current.querySelectorAll(
+            "[data-headline-char]"
+          );
+          const s2ExitP = clamp(p, 0.28, 0.34);
+          const s2ExitY = s2ExitP * -30;
+          const s2ExitOpacity = (1 - s2ExitP) * whiteExitOpacity;
+          const s2Active = p >= 0.16 && p <= 0.90;
 
-        // ----------------------------------------------------
-        // D. 3D CARDS DRIFT, BOKEH & FAST CONVERGENCE TRANSITION
-        // Entrance: p = 0.18 -> 0.26
-        // Drift to Edges + Soft Bokeh: p = 0.28 -> 0.38
-        // Sudden Converge & Instant Collapse: p = 0.84 -> 0.88
-        // ----------------------------------------------------
-        const driftP = clamp(p, 0.28, 0.38);
-        const convergeP = clamp(p, 0.84, 0.88);
-        const convergeEased = easeInOutSmooth(convergeP);
+          stage2ContainerRef.current.style.opacity = "1";
+          stage2ContainerRef.current.style.visibility =
+            s2Active ? "visible" : "hidden";
+          stage2ContainerRef.current.style.pointerEvents =
+            s2Active && p <= 0.34 ? "auto" : "none";
 
-        // Snappy collapse window so cards don't linger before Stage 6
-        const zoomOutP = clamp(p, 0.86, 0.90);
-        const quickZoomOut = Math.min(1, zoomOutP * 1.35);
+          if (charElements && charElements.length > 0) {
+            const totalChars = charElements.length;
+            const hP = clamp(p, 0.18, 0.26);
 
-        // Progressive bokeh blur, desaturation, and soft ambient opacity in background
-        const blurAmount = driftP * 15;
-        const grayscaleAmount = driftP * 70;
-        const dimOpacity =
-          (1 - driftP * 0.58) * (1 - quickZoomOut) * whiteExitOpacity;
-        const clusterZoomOutScale = Math.max(0, 1.0 - quickZoomOut);
-        const clusterDepthZ = -quickZoomOut * 800;
+            charElements.forEach((el, index) => {
+              const charEl = el as HTMLElement;
+              const charStart = (index / totalChars) * 0.65;
+              const charEnd = Math.min(1, charStart + 0.35);
+              const charProgress = clamp(hP, charStart, charEnd);
 
-        // --- Card 1: Web Platform ---
-        const card1El = stage2ContainerRef.current.querySelector(
-          "[data-card='1']"
-        ) as HTMLElement;
-        if (card1El) {
-          const c1InP = clamp(p, 0.18, 0.26);
-          const inX = (1 - c1InP) * -60;
-          const inY = (1 - c1InP) * 100;
-          const driftX = driftP * -40;
-          const driftY = driftP * 50;
+              const scale = 1.22 - charProgress * 0.22;
+              const entryOpacity = Math.min(1, charProgress * 1.6);
+              const finalOpacity = entryOpacity * s2ExitOpacity;
+              const translateY =
+                (1 - charProgress) * -10 + s2ExitY + whiteExitY;
+              const blur = (1 - charProgress) * 2.5;
 
-          const targetConvergeX = vw * 0.34;
-          const targetConvergeY = -vh * 0.32;
-          const curX =
-            (inX + driftX) * (1 - convergeEased) +
-            targetConvergeX * convergeEased;
-          const curY =
-            (inY + driftY) * (1 - convergeEased) +
-            targetConvergeY * convergeEased +
-            whiteExitY;
-          const curRot = -24.54 * (1 - convergeEased);
+              const r = Math.round(15 + (1 - charProgress) * 193);
+              const g = Math.round(15 + (1 - charProgress) * 10);
+              const b = Math.round(15 + (1 - charProgress) * 10);
 
-          card1El.style.opacity = (c1InP * dimOpacity).toFixed(3);
-          card1El.style.transform = `translate3d(${curX.toFixed(
-            2
-          )}px, ${curY.toFixed(
-            2
-          )}px, ${clusterDepthZ.toFixed(1)}px) rotate(${curRot.toFixed(
-            2
-          )}deg) scale(${clusterZoomOutScale.toFixed(3)})`;
-          card1El.style.filter = `blur(${blurAmount.toFixed(
-            1
-          )}px) grayscale(${grayscaleAmount.toFixed(0)}%)`;
-        }
+              charEl.style.opacity = finalOpacity.toFixed(3);
+              charEl.style.transform = `translate3d(0, ${translateY.toFixed(
+                1
+              )}px, 0) scale(${scale.toFixed(3)})`;
+              charEl.style.filter =
+                blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : "none";
+              charEl.style.color = `rgb(${r}, ${g}, ${b})`;
+            });
+          }
 
-        // --- Card 2: AI Processor Chip (Center) ---
-        const card2El = stage2ContainerRef.current.querySelector(
-          "[data-card='2']"
-        ) as HTMLElement;
-        if (card2El) {
-          const c2InP = clamp(p, 0.19, 0.26);
-          const inY = (1 - c2InP) * 120;
-          const driftX = driftP * 120;
-          const driftY = driftP * -380;
-          const baseScale = (0.7 + c2InP * 0.3) * (1 - driftP * 0.12);
+          const narrativeEl = stage2ContainerRef.current.querySelector(
+            "[data-stage2-narrative]"
+          ) as HTMLElement;
+          if (narrativeEl) {
+            const nInP = clamp(p, 0.2, 0.26);
+            const nOutP = clamp(p, 0.28, 0.34);
+            const nOpacity = nInP * (1 - nOutP) * whiteExitOpacity;
+            const nY = (1 - nInP) * 30 - nOutP * 30 + whiteExitY;
+            narrativeEl.style.opacity = nOpacity.toFixed(3);
+            narrativeEl.style.transform = `translate3d(0, ${nY.toFixed(2)}px, 0)`;
+          }
 
-          const targetConvergeX = 0;
-          const targetConvergeY = -vh * 0.32;
-          const curX =
-            driftX * (1 - convergeEased) + targetConvergeX * convergeEased;
-          const curY =
-            (inY + driftY) * (1 - convergeEased) +
-            targetConvergeY * convergeEased +
-            whiteExitY;
-          const cardScale =
-            baseScale * (1 - convergeEased) + 1.0 * convergeEased;
-          const finalScale = cardScale * clusterZoomOutScale;
+          const driftP = clamp(p, 0.28, 0.38);
+          const convergeP = clamp(p, 0.84, 0.88);
+          const convergeEased = easeInOutSmooth(convergeP);
 
-          card2El.style.opacity = (c2InP * dimOpacity).toFixed(3);
-          card2El.style.transform = `translate3d(${curX.toFixed(
-            2
-          )}px, ${curY.toFixed(
-            2
-          )}px, ${clusterDepthZ.toFixed(1)}px) scale(${finalScale.toFixed(3)})`;
-          card2El.style.filter = `blur(${blurAmount.toFixed(
-            1
-          )}px) grayscale(${grayscaleAmount.toFixed(0)}%)`;
-        }
+          // Snappy collapse window so cards don't linger before Stage 6
+          const zoomOutP = clamp(p, 0.86, 0.90);
+          const quickZoomOut = Math.min(1, zoomOutP * 1.35);
 
-        // --- Card 3: Database & Analytics ---
-        const card3El = stage2ContainerRef.current.querySelector(
-          "[data-card='3']"
-        ) as HTMLElement;
-        if (card3El) {
-          const c3InP = clamp(p, 0.2, 0.27);
-          const inX = (1 - c3InP) * 60;
-          const inY = (1 - c3InP) * -80;
-          const driftX = driftP * 70;
-          const driftY = driftP * 380;
+          // Progressive bokeh blur, desaturation, and soft ambient opacity in background
+          const blurAmount = driftP * 15;
+          const grayscaleAmount = driftP * 70;
+          const dimOpacity =
+            (1 - driftP * 0.58) * (1 - quickZoomOut) * whiteExitOpacity;
+          const clusterZoomOutScale = Math.max(0, 1.0 - quickZoomOut);
+          const clusterDepthZ = -quickZoomOut * 800;
 
-          const targetConvergeX = -vw * 0.34;
-          const targetConvergeY = vh * 0.32;
-          const curX =
-            (inX + driftX) * (1 - convergeEased) +
-            targetConvergeX * convergeEased;
-          const curY =
-            (inY + driftY) * (1 - convergeEased) +
-            targetConvergeY * convergeEased +
-            whiteExitY;
-          const curRot = 15 * (1 - convergeEased);
+          // --- Card 1: Web Platform ---
+          const card1El = stage2ContainerRef.current.querySelector(
+            "[data-card='1']"
+          ) as HTMLElement;
+          if (card1El) {
+            const c1InP = clamp(p, 0.18, 0.26);
+            const inX = (1 - c1InP) * -60;
+            const inY = (1 - c1InP) * 100;
+            const driftX = driftP * -40;
+            const driftY = driftP * 50;
 
-          card3El.style.opacity = (c3InP * dimOpacity).toFixed(3);
-          card3El.style.transform = `translate3d(${curX.toFixed(
-            2
-          )}px, ${curY.toFixed(
-            2
-          )}px, ${clusterDepthZ.toFixed(1)}px) rotate(${curRot.toFixed(
-            2
-          )}deg) scale(${clusterZoomOutScale.toFixed(3)})`;
-          card3El.style.filter = `blur(${blurAmount.toFixed(
-            1
-          )}px) grayscale(${grayscaleAmount.toFixed(0)}%)`;
+            const targetConvergeX = vw * 0.34;
+            const targetConvergeY = -vh * 0.32;
+            const curX =
+              (inX + driftX) * (1 - convergeEased) +
+              targetConvergeX * convergeEased;
+            const curY =
+              (inY + driftY) * (1 - convergeEased) +
+              targetConvergeY * convergeEased +
+              whiteExitY;
+            const curRot = -24.54 * (1 - convergeEased);
+
+            card1El.style.opacity = (c1InP * dimOpacity).toFixed(3);
+            card1El.style.transform = `translate3d(${curX.toFixed(
+              2
+            )}px, ${curY.toFixed(
+              2
+            )}px, ${clusterDepthZ.toFixed(1)}px) rotate(${curRot.toFixed(
+              2
+            )}deg) scale(${clusterZoomOutScale.toFixed(3)})`;
+            card1El.style.filter = `blur(${blurAmount.toFixed(
+              1
+            )}px) grayscale(${grayscaleAmount.toFixed(0)}%)`;
+          }
+
+          // --- Card 2: AI Processor Chip (Center) ---
+          const card2El = stage2ContainerRef.current.querySelector(
+            "[data-card='2']"
+          ) as HTMLElement;
+          if (card2El) {
+            const c2InP = clamp(p, 0.19, 0.26);
+            const inY = (1 - c2InP) * 120;
+            const driftX = driftP * 120;
+            const driftY = driftP * -380;
+            const baseScale = (0.7 + c2InP * 0.3) * (1 - driftP * 0.12);
+
+            const targetConvergeX = 0;
+            const targetConvergeY = -vh * 0.32;
+            const curX =
+              driftX * (1 - convergeEased) + targetConvergeX * convergeEased;
+            const curY =
+              (inY + driftY) * (1 - convergeEased) +
+              targetConvergeY * convergeEased +
+              whiteExitY;
+            const cardScale =
+              baseScale * (1 - convergeEased) + 1.0 * convergeEased;
+            const finalScale = cardScale * clusterZoomOutScale;
+
+            card2El.style.opacity = (c2InP * dimOpacity).toFixed(3);
+            card2El.style.transform = `translate3d(${curX.toFixed(
+              2
+            )}px, ${curY.toFixed(
+              2
+            )}px, ${clusterDepthZ.toFixed(1)}px) scale(${finalScale.toFixed(3)})`;
+            card2El.style.filter = `blur(${blurAmount.toFixed(
+              1
+            )}px) grayscale(${grayscaleAmount.toFixed(0)}%)`;
+          }
+
+          // --- Card 3: Database & Analytics ---
+          const card3El = stage2ContainerRef.current.querySelector(
+            "[data-card='3']"
+          ) as HTMLElement;
+          if (card3El) {
+            const c3InP = clamp(p, 0.2, 0.27);
+            const inX = (1 - c3InP) * 60;
+            const inY = (1 - c3InP) * -80;
+            const driftX = driftP * 70;
+            const driftY = driftP * 380;
+
+            const targetConvergeX = -vw * 0.34;
+            const targetConvergeY = vh * 0.32;
+            const curX =
+              (inX + driftX) * (1 - convergeEased) +
+              targetConvergeX * convergeEased;
+            const curY =
+              (inY + driftY) * (1 - convergeEased) +
+              targetConvergeY * convergeEased +
+              whiteExitY;
+            const curRot = 15 * (1 - convergeEased);
+
+            card3El.style.opacity = (c3InP * dimOpacity).toFixed(3);
+            card3El.style.transform = `translate3d(${curX.toFixed(
+              2
+            )}px, ${curY.toFixed(
+              2
+            )}px, ${clusterDepthZ.toFixed(1)}px) rotate(${curRot.toFixed(
+              2
+            )}deg) scale(${clusterZoomOutScale.toFixed(3)})`;
+            card3El.style.filter = `blur(${blurAmount.toFixed(
+              1
+            )}px) grayscale(${grayscaleAmount.toFixed(0)}%)`;
+          }
         }
       }
 
@@ -531,10 +619,30 @@ export function HeroScrollAnimation() {
       // E. STAGE 3: "BUILT AROUND WHAT YOUR BUSINESS NEEDS." + 2-PHASE FLIP DECK
       // ----------------------------------------------------
       if (stage3ContainerRef.current) {
-        // 1. Stage 3 Headline: Letter-by-Letter Zoom-Out (Entrance: 0.34 -> 0.38)
-        const stage3Chars = stage3ContainerRef.current.querySelectorAll(
-          "[data-stage3-char]"
-        );
+        const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+        if (isMobile) {
+          const s3InP = clamp((p - 0.28) / 0.06, 0, 1);
+          const s3OutP = clamp((p - 0.48) / 0.06, 0, 1);
+          const s3Opacity = s3InP * (1 - s3OutP);
+          const s3Active = p >= 0.28 && p <= 0.54;
+
+          stage3ContainerRef.current.style.opacity = s3Opacity.toFixed(3);
+          stage3ContainerRef.current.style.transform = "translate3d(0, 0, 0)";
+          stage3ContainerRef.current.style.visibility = s3Active ? "visible" : "hidden";
+          stage3ContainerRef.current.style.pointerEvents = s3Active && s3Opacity > 0.3 ? "auto" : "none";
+
+          const stage3Chars = stage3ContainerRef.current.querySelectorAll("[data-stage3-char]");
+          stage3Chars.forEach((el) => {
+            const charEl = el as HTMLElement;
+            charEl.style.opacity = s3InP > 0.1 ? "1" : "0";
+            charEl.style.transform = "none";
+            charEl.style.color = "rgb(15, 15, 15)";
+          });
+        } else {
+          // 1. Stage 3 Headline: Letter-by-Letter Zoom-Out (Entrance: 0.34 -> 0.38)
+          const stage3Chars = stage3ContainerRef.current.querySelectorAll(
+            "[data-stage3-char]"
+          );
         const s3ExitP = clamp(p, 0.5, 0.56);
         const s3ExitY = s3ExitP * -30;
         const s3ExitOpacity = (1 - s3ExitP) * whiteExitOpacity;
@@ -640,17 +748,36 @@ export function HeroScrollAnimation() {
           s3Active ? "visible" : "hidden";
         stage3ContainerRef.current.style.pointerEvents =
           s3Active ? "auto" : "none";
+        }
       }
 
       // ------------------------------------------------------------------
       // F. STAGE 4: "FROM COMPLEX PROBLEMS TO WORKING SYSTEMS."
-      // Entrance: 0.54 -> 0.60 (Establishes at Step 06)
-      // Exit / Clearance: 0.60 -> 0.65 (Fades out cleanly before video 1 arrives)
       // ------------------------------------------------------------------
       if (stage4ContainerRef.current) {
-        const stage4Chars = stage4ContainerRef.current.querySelectorAll(
-          "[data-stage4-char]"
-        );
+        const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+        if (isMobile) {
+          const s4InP = clamp((p - 0.50) / 0.05, 0, 1);
+          const s4OutP = clamp((p - 0.60) / 0.05, 0, 1);
+          const s4Opacity = s4InP * (1 - s4OutP);
+          const s4Active = p >= 0.50 && p <= 0.65;
+
+          stage4ContainerRef.current.style.opacity = s4Opacity.toFixed(3);
+          stage4ContainerRef.current.style.transform = "translate3d(0, 0, 0)";
+          stage4ContainerRef.current.style.visibility = s4Active ? "visible" : "hidden";
+          stage4ContainerRef.current.style.pointerEvents = s4Active && s4Opacity > 0.3 ? "auto" : "none";
+
+          const stage4Chars = stage4ContainerRef.current.querySelectorAll("[data-stage4-char]");
+          stage4Chars.forEach((el) => {
+            const charEl = el as HTMLElement;
+            charEl.style.opacity = s4InP > 0.1 ? "1" : "0";
+            charEl.style.transform = "none";
+            charEl.style.color = "rgb(15, 15, 15)";
+          });
+        } else {
+          const stage4Chars = stage4ContainerRef.current.querySelectorAll(
+            "[data-stage4-char]"
+          );
         const s4P = clamp(p, 0.54, 0.6);
         const s4ExitP = clamp(p, 0.6, 0.65);
         const s4ExitOpacity = (1 - s4ExitP) * whiteExitOpacity;
@@ -691,6 +818,7 @@ export function HeroScrollAnimation() {
           s4Active ? "visible" : "hidden";
         stage4ContainerRef.current.style.pointerEvents =
           s4Active ? "auto" : "none";
+        }
       }
 
       // ------------------------------------------------------------------
@@ -907,54 +1035,56 @@ export function HeroScrollAnimation() {
           setActiveFrameworkIndex(-1);
         }
 
-        // 1. Top Navbar EvilEye Plasma Effect: ONLY ignites when scrolling forward into Stage 7 (p: 0.925 -> 0.955), Dissolves away as emblem settles (p: 0.97 -> 0.995). NEVER shown when scrolling up (from Section 11 to 10).
-        const eyeEl = stage7ContainerRef.current.querySelector(
-          "[data-stage7-evileye]"
-        ) as HTMLElement;
-        if (eyeEl) {
-          if (isNavigatingUpRef.current || p < 0.925 || p >= 0.995) {
-            eyeEl.style.opacity = "0";
-            eyeEl.style.visibility = "hidden";
-          } else {
-            eyeEl.style.visibility = "visible";
-            const eyeInP = clamp((p - 0.925) / (0.955 - 0.925), 0, 1);
-            const eyeInEased = easeInOutSmooth(eyeInP);
-
-            const eyeOutP = clamp((p - 0.968) / (0.995 - 0.968), 0, 1);
-            const eyeOutEased = easeInOutSmooth(eyeOutP);
-
-            const eyeOpacity = eyeInEased * (1 - eyeOutEased);
-            const eyeScale = 0.88 + eyeInEased * 0.12;
-            eyeEl.style.opacity = eyeOpacity.toFixed(3);
-            eyeEl.style.transform = `translate3d(-50%, 0, 0) scale(${eyeScale.toFixed(
-              3
-            )})`;
+        // 1. Eruption Video: Re-arms whenever logo is at top ceiling (p <= 0.945)
+        // and ignites EVERY TIME the logo drops down from above (p > 0.945 -> 1.05).
+        const eruptVid = stage7ContainerRef.current.querySelector(
+          "[data-stage7-eruption]"
+        ) as HTMLVideoElement;
+        if (eruptVid) {
+          if (p <= 0.945) {
+            // Logo is raised at the top — re-arm for next drop
+            eruptionPlayedRef.current = false;
+            eruptVid.style.opacity = "0";
+            eruptVid.pause();
+            eruptVid.currentTime = 0;
+          } else if (p > 0.945 && p <= 1.05) {
+            // Logo is dropping down from above — play eruption
+            if (!eruptionPlayedRef.current) {
+              eruptionPlayedRef.current = true;
+              eruptVid.style.opacity = "0.9";
+              eruptVid.currentTime = 0;
+              eruptVid.play().catch(() => {});
+            }
           }
         }
 
         // 2. Descending 3D Glass Motion Logo
-        const logoEl = stage7ContainerRef.current.querySelector(
+        const logoElements = stage7ContainerRef.current.querySelectorAll(
           "[data-stage7-logo]"
-        ) as HTMLElement;
+        );
 
-        if (logoEl) {
+        if (logoElements && logoElements.length > 0) {
           const logoP = clamp((p - 0.935) / (1.0 - 0.935), 0, 1);
           const logoEased = easeInOutSmooth(logoP);
-          const logoY = (1 - logoEased) * -720;
+          const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+          const logoY = (1 - logoEased) * (isMobile ? -350 : -720) - (isMobile ? 0 : 45);
           const logoScale = 0.75 + logoEased * 0.25;
           const logoBlur = (1 - logoEased) * 14;
-          const logoDepthZ = (1 - logoEased) * -400;
+          const logoDepthZ = isMobile ? 0 : (1 - logoEased) * -400;
 
-          logoEl.style.opacity = clamp(
-            (p - 0.93) / (0.965 - 0.93),
-            0,
-            1
-          ).toFixed(3);
-          logoEl.style.transform = `translate3d(0, ${logoY.toFixed(
-            1
-          )}px, ${logoDepthZ.toFixed(1)}px) scale(${logoScale.toFixed(3)})`;
-          logoEl.style.filter =
-            logoBlur > 0.2 ? `blur(${logoBlur.toFixed(1)}px)` : "none";
+          logoElements.forEach((el) => {
+            const logoEl = el as HTMLElement;
+            logoEl.style.willChange = "transform, opacity";
+            logoEl.style.opacity = clamp(
+              (p - 0.93) / (0.965 - 0.93),
+              0,
+              1
+            ).toFixed(3);
+            logoEl.style.transform = `translate3d(0, ${logoY.toFixed(
+              1
+            )}px, ${logoDepthZ.toFixed(1)}px) scale(${logoScale.toFixed(3)})`;
+            logoEl.style.filter = "none";
+          });
         }
 
         // 3. Top Header Reveal ("The Framework Behind Our Success")
@@ -966,7 +1096,8 @@ export function HeroScrollAnimation() {
           const headEased = easeInOutSmooth(headInP);
           const headY = (1 - headEased) * 25;
           headerEl.style.opacity = headEased.toFixed(3);
-          headerEl.style.transform = `translate3d(0, ${headY.toFixed(1)}px, 0)`;
+          headerEl.style.zIndex = "30";
+          headerEl.style.transform = `translate3d(0, ${headY.toFixed(1)}px, 40px)`;
         }
       }
 
@@ -1214,6 +1345,9 @@ export function HeroScrollAnimation() {
         {/* Stage 1: Innovative Tech / Infinite Growth */}
         <Stage1HeroOverlay ref={stage1TextRef} />
 
+        {/* Mobile Persistent 3D Floating Background Cards */}
+        <MobileFloatingCardsBg ref={mobileBgRef} />
+
         {/* Stage 2: Your Business Has A Lot Going On + 3D Glass Cards */}
         <Stage2OverviewOverlay ref={stage2ContainerRef} mousePos={mousePos} />
 
@@ -1237,6 +1371,7 @@ export function HeroScrollAnimation() {
         <Stage7FrameworkOverlay
           ref={stage7ContainerRef}
           activeStepIndex={activeFrameworkIndex}
+          isActive={activeStep >= 9 && activeStep <= 14}
           mousePos={mousePos}
         />
 

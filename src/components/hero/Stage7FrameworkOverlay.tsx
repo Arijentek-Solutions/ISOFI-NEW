@@ -1,48 +1,38 @@
 "use client";
 
-import React, { forwardRef, useRef, useEffect } from "react";
-import { GravitationalSingularity } from "./GravitationalSingularity";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { FRAMEWORK_STEPS } from "./constants";
+import { Stage7EmbersCanvas } from "./Stage7EmbersCanvas";
+import { GravitationalSingularity } from "./GravitationalSingularity";
+import SplashCursor from "./SplashCursor";
 
-function HoldToRotate3DLogo({ mousePos = { x: 0, y: 0 } }: { mousePos?: { x: number; y: number } }) {
+function HoldToRotate3DLogo({
+  mousePos = { x: 0, y: 0 },
+}: {
+  mousePos?: { x: number; y: number };
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const lastPosRef = useRef({ x: 0, y: 0 });
-  const rotRef = useRef({ x: 0, y: 0, z: 19.48 });
-  const targetRotRef = useRef({ x: 0, y: 0 });
+  const rotRef = useRef({ x: 0, y: 0, z: 0 });
+  const targetRotRef = useRef({ x: 0, y: 0, z: 0 });
   const velRotRef = useRef({ x: 0, y: 0 });
-  const mousePosRef = useRef(mousePos);
-
-  useEffect(() => {
-    mousePosRef.current = mousePos;
-  }, [mousePos]);
 
   useEffect(() => {
     let animId: number;
-    let lastTime = performance.now();
+    let time = 0;
 
-    const loop = (time: number) => {
-      const dt = Math.min((time - lastTime) / 1000, 0.1);
-      lastTime = time;
+    const loop = () => {
+      time += 16;
+      if (!isDraggingRef.current) {
+        velRotRef.current.x *= 0.94;
+        velRotRef.current.y *= 0.94;
 
-      if (isDraggingRef.current) {
-        // Direct smooth interpolation toward user drag target
-        rotRef.current.x += (targetRotRef.current.x - rotRef.current.x) * 0.25;
-        rotRef.current.y += (targetRotRef.current.y - rotRef.current.y) * 0.25;
-      } else {
-        // Apply inertia velocity decay when released
-        rotRef.current.x += velRotRef.current.x * dt * 50;
-        rotRef.current.y += velRotRef.current.y * dt * 50;
+        targetRotRef.current.x += velRotRef.current.x;
+        targetRotRef.current.y += velRotRef.current.y;
 
-        velRotRef.current.x *= 0.92;
-        velRotRef.current.y *= 0.92;
-
-        // Hover parallax target angles based on cursor position
-        const hoverTargetX = mousePosRef.current.y * -16;
-        const hoverTargetY = mousePosRef.current.x * 22;
-
-        targetRotRef.current.x += (hoverTargetX - targetRotRef.current.x) * 0.08;
-        targetRotRef.current.y += (hoverTargetY - targetRotRef.current.y) * 0.08;
+        targetRotRef.current.x += (mousePos.y * -12 - targetRotRef.current.x) * 0.05;
+        targetRotRef.current.y += (mousePos.x * 16 - targetRotRef.current.y) * 0.05;
 
         rotRef.current.x += (targetRotRef.current.x - rotRef.current.x) * 0.08;
         rotRef.current.y += (targetRotRef.current.y - rotRef.current.y) * 0.08;
@@ -69,7 +59,7 @@ function HoldToRotate3DLogo({ mousePos = { x: 0, y: 0 } }: { mousePos?: { x: num
 
     animId = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animId);
-  }, []);
+  }, [mousePos.x, mousePos.y]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -90,11 +80,9 @@ function HoldToRotate3DLogo({ mousePos = { x: 0, y: 0 } }: { mousePos?: { x: num
     const dy = e.clientY - lastPosRef.current.y;
     lastPosRef.current = { x: e.clientX, y: e.clientY };
 
-    // Update continuous rotation angle without restrictive clamping
     targetRotRef.current.y += dx * 0.65;
     targetRotRef.current.x -= dy * 0.65;
 
-    // Record momentum velocity
     velRotRef.current = {
       x: -dy * 0.35,
       y: dx * 0.35,
@@ -122,7 +110,6 @@ function HoldToRotate3DLogo({ mousePos = { x: 0, y: 0 } }: { mousePos?: { x: num
         transformStyle: "preserve-3d",
       }}
     >
-      {/* Exact Photorealistic 3D Glass Logo from Figma */}
       <img
         src="/images/isofiniti-figma-3d.png"
         alt="ISOFINITI 3D Glass Emblem"
@@ -137,14 +124,16 @@ function HoldToRotate3DLogo({ mousePos = { x: 0, y: 0 } }: { mousePos?: { x: num
 
 interface Stage7FrameworkOverlayProps {
   activeStepIndex?: number;
+  isActive?: boolean;
   mousePos?: { x: number; y: number };
 }
 
 export const Stage7FrameworkOverlay = forwardRef<
   HTMLDivElement,
   Stage7FrameworkOverlayProps
->(({ activeStepIndex = -1, mousePos = { x: 0, y: 0 } }, ref) => {
+>(({ activeStepIndex = -1, isActive = false, mousePos = { x: 0, y: 0 } }, ref) => {
   const currentIndex = activeStepIndex;
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
     <div
@@ -152,28 +141,131 @@ export const Stage7FrameworkOverlay = forwardRef<
       style={{ visibility: "hidden" }}
       className="absolute inset-0 pointer-events-none w-full flex items-center justify-center z-30 [perspective:1400px]"
     >
-      {/* Ambient Liquid Black Video Background (bg.mp4) */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-20">
-        <div className="absolute inset-0 bg-[#050505]" />
+      {/* Stage 7 Solid Background */}
+      <div className="absolute inset-0 bg-[#05040A] -z-30 pointer-events-none" />
+
+      {/* Stage 7 Isolated Dusty Particle Embers — in front of black background */}
+      <Stage7EmbersCanvas isActive={isActive} />
+
+      {/* Stage 7 Eruption Video & Glow Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
+        {/* Eruption Color-Dodge Video Overlay - Ignites on every logo drop */}
         <video
-          src="/videos/bg.mp4"
-          autoPlay
-          loop
+          ref={videoRef}
+          data-stage7-eruption
+          src="/assets/eruption.mp4"
           muted
           playsInline
           preload="auto"
-          className="w-full h-full object-cover opacity-85 select-none pointer-events-none"
+          onEnded={(e) => {
+            const vid = e.currentTarget;
+            vid.style.opacity = "0";
+            vid.pause();
+          }}
+          className="absolute inset-0 w-full h-full object-cover object-[50%_0%] pointer-events-none mix-blend-color-dodge transition-opacity duration-700 ease-out opacity-0"
+          style={{
+            WebkitMaskImage:
+              "radial-gradient(ellipse 75% 70% at 50% 0%, #000 25%, transparent 80%)",
+            maskImage:
+              "radial-gradient(ellipse 75% 70% at 50% 0%, #000 25%, transparent 80%)",
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60" />
 
-        {/* Top Atmospheric Crimson Glow Diffuser */}
-        <div className="absolute -top-[100px] left-1/2 -translate-x-1/2 w-[min(900px,85vw)] h-[320px] bg-gradient-to-b from-[#FF1A1A]/45 via-[#D91E1E]/15 to-transparent blur-[60px]" />
+        {/* Glow Image Overlay */}
+        <div
+          className="absolute inset-0 w-full h-full bg-no-repeat bg-top mix-blend-screen pointer-events-none opacity-100"
+          style={{
+            backgroundImage: 'url("/assets/glow.png")',
+            backgroundSize: "100% auto",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 75% 70% at 50% 0%, #000 25%, transparent 80%)",
+            maskImage:
+              "radial-gradient(ellipse 75% 70% at 50% 0%, #000 25%, transparent 80%)",
+          }}
+        />
       </div>
 
-      {/* Central Stage Grid - Shifted Upwards */}
-      <div className="relative w-full max-w-[1920px] mx-auto px-6 sm:px-10 md:px-16 lg:px-[82px] h-full flex flex-col justify-between pt-[75px] sm:pt-[90px] md:pt-[105px] pb-8 sm:pb-12 pointer-events-none z-10">
+      {/* React Bits SplashCursor Fluid Component — scoped exclusively to Stage 7 */}
+      {isActive && (
+        <SplashCursor
+          COLOR="#d61a1a"
+          RAINBOW_MODE={false}
+          SPLAT_RADIUS={0.24}
+          DENSITY_DISSIPATION={3.0}
+          VELOCITY_DISSIPATION={1.8}
+          FORCE_UPWARD_ZONE={true}
+        />
+      )}
+
+      {/* ========================================================================= */}
+      {/* MOBILE SCREEN LAYOUT (md:hidden) — Pure Mobile View                       */}
+      {/* ========================================================================= */}
+      <div className="flex md:hidden flex-col items-center w-full h-full pt-10 pb-8 px-4 relative z-20 pointer-events-auto overflow-hidden">
+        {/* Top Header */}
+        <div className="w-full text-center flex flex-col items-center mb-1 select-none">
+          <h2 className="font-['Funnel_Display',sans-serif] font-bold text-white tracking-tight text-[22px] xs:text-[24px] leading-snug">
+            The Framework Behind
+          </h2>
+          <p className="font-['Funnel_Display',sans-serif] font-bold text-[#D91E1E] tracking-tight text-[26px] xs:text-[29px] leading-snug">
+            Our Success
+          </p>
+        </div>
+
+        {/* Center 3D Logo Video Emblem (logo.mp4) */}
+        <div data-stage7-logo className="relative w-[210px] xs:w-[240px] aspect-square flex items-center justify-center my-1 select-none pointer-events-none">
+          <video
+            src="/assets/logo.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="w-full h-full object-cover mix-blend-screen pointer-events-none select-none scale-135"
+            style={{
+              WebkitMaskImage:
+                "radial-gradient(65% 65% at 50% 48%, #000 35%, transparent 88%)",
+              maskImage:
+                "radial-gradient(65% 65% at 50% 48%, #000 35%, transparent 88%)",
+            }}
+          />
+        </div>
+
+        {/* Sequenced Interactive Framework Step Card Slot */}
+        <div className="relative w-full max-w-[340px] h-[160px] xs:h-[180px] mt-2 flex items-center justify-center">
+          {FRAMEWORK_STEPS.map((step, idx) => {
+            const activeIdx = Math.max(0, currentIndex);
+            const isActive = idx === activeIdx;
+            const isRight = step.side === "right";
+
+            return (
+              <div
+                key={step.id}
+                className={`absolute inset-x-0 flex flex-col text-left max-w-[270px] xs:max-w-[300px] transition-all duration-500 ease-out ${
+                  isRight ? "ml-auto pr-1" : "mr-auto pl-1"
+                } ${
+                  isActive
+                    ? "opacity-100 translate-y-0 scale-100 pointer-events-auto filter-none"
+                    : "opacity-0 translate-y-4 scale-95 pointer-events-none blur-[4px]"
+                }`}
+              >
+                <h3 className="font-['Funnel_Display',sans-serif] font-bold text-[20px] xs:text-[23px] text-white tracking-tight leading-snug">
+                  <span className="text-[#D91E1E]">{step.stepNumber}</span> — {step.title}
+                </h3>
+                <p className="font-[family-name:var(--font-onest)] font-light text-zinc-300 text-[12.5px] xs:text-[13.5px] leading-relaxed mt-1.5">
+                  {step.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* PC / DESKTOP SCREEN LAYOUT (hidden md:flex) — 100% UNTOUCHED ORIGINAL     */}
+      {/* ========================================================================= */}
+      <div className="hidden md:flex relative w-full max-w-[1920px] mx-auto px-6 sm:px-10 md:px-16 lg:px-[82px] h-full flex-col justify-between pt-[75px] sm:pt-[90px] md:pt-[105px] pb-8 sm:pb-12 pointer-events-none z-10">
         
-        {/* Top Centered Header (Shifted up with clean typography) */}
+        {/* Top Centered Header */}
         <div
           data-stage7-header
           style={{ opacity: 0 }}
@@ -190,25 +282,43 @@ export const Stage7FrameworkOverlay = forwardRef<
         {/* Middle Interactive Composition: Lifted Center 3D Logo & Persistent Staggered Framework Cards */}
         <div className="relative w-full flex-1 flex items-center justify-center -mt-4 sm:-mt-8 lg:-mt-10">
           
-          {/* Gravitational Particle Orbit Field & Interactive Hold-To-Rotate 3D Emblem */}
+          {/* Central Ink Flow Video Emblem (logo.mp4) with Screen Blend & Pointer Parallax */}
           <div
             data-stage7-logo
-            className="relative w-[clamp(320px,36vw,580px)] aspect-square flex items-center justify-center pointer-events-auto"
+            className="relative w-[min(100vw,1260px)] lg:w-[min(100vw,1360px)] aspect-[16/9] flex items-center justify-center pointer-events-auto select-none z-10"
           >
-            <GravitationalSingularity>
-              <div className="relative w-[clamp(240px,25vw,380px)] aspect-square flex items-center justify-center">
-                <HoldToRotate3DLogo mousePos={mousePos} />
-              </div>
-            </GravitationalSingularity>
+            <div
+              className="relative w-full h-full flex items-center justify-center transform-gpu"
+              style={{
+                transform: `translate3d(${(mousePos.x * 20).toFixed(1)}px, ${(mousePos.y * -20).toFixed(1)}px, 0)`,
+                willChange: "transform",
+              }}
+            >
+              <video
+                src="/assets/logo.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className="w-full h-full object-cover mix-blend-screen pointer-events-none select-none scale-105 sm:scale-110 transform-gpu"
+                style={{
+                  willChange: "transform",
+                  WebkitMaskImage:
+                    "radial-gradient(58% 56% at 50% 49%, #000 28%, transparent 85%)",
+                  maskImage:
+                    "radial-gradient(58% 56% at 50% 49%, #000 28%, transparent 85%)",
+                }}
+              />
+            </div>
           </div>
 
-          {/* Alternating Framework Step Cards (Ultra-Smooth Directional Fade-Up) */}
+          {/* Alternating Framework Step Cards (Persistent Scroll Timeline) */}
           {FRAMEWORK_STEPS.map((step, idx) => {
             const isActive = idx === currentIndex;
             const isRight = step.side === "right";
             const isUpcoming = idx > currentIndex;
 
-            // Directional Smooth Fade-Up Transform
             const transform = isActive
               ? "translate3d(0, -50%, 0)"
               : isUpcoming

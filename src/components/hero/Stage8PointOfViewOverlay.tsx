@@ -191,7 +191,7 @@ export const Stage8PointOfViewOverlay = forwardRef<
           {/* ======================================================== */}
           {/* RIGHT COLUMN: 3D Inertial Spatial Cylinder Deck          */}
           {/* ======================================================== */}
-          <div className="lg:col-span-6 relative w-full h-[440px] sm:h-[520px] lg:h-[640px] flex items-center justify-center pointer-events-none">
+          <div className="lg:col-span-6 relative w-full h-[220px] xs:h-[250px] sm:h-[520px] lg:h-[640px] flex items-center justify-center pointer-events-none -mt-6 xs:-mt-10 sm:-mt-16 lg:mt-0">
             
             {/* 3D Perspective Stage Viewport */}
             <div className="relative w-full h-full flex items-center justify-center [perspective:1400px] [transform-style:preserve-3d] select-none overflow-visible">
@@ -199,7 +199,7 @@ export const Stage8PointOfViewOverlay = forwardRef<
               {/* ---------------------------------------------------- */}
               {/* Continuous 3D Cylinder Orbit Cards Deck              */}
               {/* ---------------------------------------------------- */}
-              <div className="relative w-[min(380px,78vw)] sm:w-[clamp(320px,30vw,460px)] aspect-[494/617] max-h-[580px] flex items-center justify-center [transform-style:preserve-3d]">
+              <div className="relative w-[175px] xs:w-[205px] sm:w-[clamp(320px,30vw,460px)] aspect-[494/617] max-h-[580px] flex items-center justify-center [transform-style:preserve-3d]">
                 {POINT_OF_VIEW_ITEMS.map((item, idx) => {
                   return (
                     <div
