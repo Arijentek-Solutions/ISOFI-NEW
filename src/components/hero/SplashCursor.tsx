@@ -1426,7 +1426,7 @@ function SplashCursor({
   }, []);
 
   return (
-    <div className="absolute inset-0 z-40 pointer-events-none w-full h-full overflow-hidden">
+    <div className="absolute inset-0 z-[2] pointer-events-none w-full h-full overflow-hidden">
       <canvas ref={canvasRef} id="fluid" className="w-full h-full block pointer-events-none" />
     </div>
   );

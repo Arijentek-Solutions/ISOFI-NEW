@@ -11,8 +11,8 @@ import {
 export const START_FRAME = 2;
 export const TOTAL_FRAMES = 115;
 
-// Duration in ms for smooth cinematic travel
-export const SCROLL_TRANSITION_DURATION = 2600;
+// Duration in ms for smooth cinematic travel (snappy & responsive)
+export const SCROLL_TRANSITION_DURATION = 1100;
 
 export const FRAME_PATH = (index: number) =>
   `/frames/frame_${String(index).padStart(4, "0")}.jpg`;

@@ -190,17 +190,17 @@ export function HeroScrollAnimation() {
       (clampedIndex >= 6 && clampedIndex <= 9) ||
       (currentStepRef.current >= 6 && currentStepRef.current <= 9);
 
-    // Smooth snappy duration for Framework & POV revolving steps (10-17)
+    // Smooth snappy duration for Framework & POV revolving steps (10-18)
     const isFastStepTransition =
       clampedIndex >= 10 && currentStepRef.current >= 10;
 
     currentDurationRef.current = isCardFlipTransition
-      ? 1400
+      ? 750
       : isFastStepTransition
-        ? 1400
+        ? 700
         : isVideoOrLogoTransition
-          ? 2000
-          : SCROLL_TRANSITION_DURATION;
+          ? 950
+          : 1100;
 
     isNavigatingUpRef.current = clampedIndex < currentStepRef.current;
     currentStepRef.current = clampedIndex;
@@ -217,8 +217,11 @@ export function HeroScrollAnimation() {
     if (lockTimeoutRef.current) clearTimeout(lockTimeoutRef.current);
   }, []);
 
-  // Auto-transition to "Innovative Tech" (Step 1) on initial website entry
+  // Auto-transition to "Innovative Tech" (Step 1) on initial website entry (desktop only)
   useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      return;
+    }
     const autoIntroTimer = setTimeout(() => {
       goToStep(1);
     }, 250);
@@ -255,11 +258,11 @@ export function HeroScrollAnimation() {
             }, 2500);
           }
 
-          // Unlock ONLY when the target section has fully arrived & settled
+          // Unlock promptly when target section arrives so subsequent scrolls register immediately
           if (lockTimeoutRef.current) clearTimeout(lockTimeoutRef.current);
           lockTimeoutRef.current = setTimeout(() => {
             isAnimatingLockRef.current = false;
-          }, 180);
+          }, 40);
         }
       }
 
@@ -507,7 +510,7 @@ export function HeroScrollAnimation() {
           const dimOpacity =
             (1 - driftP * 0.58) * (1 - quickZoomOut) * whiteExitOpacity;
           const clusterZoomOutScale = Math.max(0, 1.0 - quickZoomOut);
-          const clusterDepthZ = -quickZoomOut * 800;
+          const clusterDepthZ = -30 - quickZoomOut * 800;
 
           // --- Card 1: Web Platform ---
           const card1El = stage2ContainerRef.current.querySelector(

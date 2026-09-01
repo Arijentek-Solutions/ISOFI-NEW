@@ -191,7 +191,7 @@ export const Stage8PointOfViewOverlay = forwardRef<
           {/* ======================================================== */}
           {/* RIGHT COLUMN: 3D Inertial Spatial Cylinder Deck          */}
           {/* ======================================================== */}
-          <div className="lg:col-span-6 relative w-full h-[220px] xs:h-[250px] sm:h-[520px] lg:h-[640px] flex items-center justify-center pointer-events-none -mt-6 xs:-mt-10 sm:-mt-16 lg:mt-0">
+          <div className="lg:col-span-6 relative w-full h-[220px] xs:h-[250px] sm:h-[520px] lg:h-[640px] flex items-center justify-center pointer-events-none -mt-8 xs:-mt-12 sm:-mt-18 lg:-mt-8 -translate-y-2 sm:-translate-y-4 lg:-translate-y-6">
             
             {/* 3D Perspective Stage Viewport */}
             <div className="relative w-full h-full flex items-center justify-center [perspective:1400px] [transform-style:preserve-3d] select-none overflow-visible">

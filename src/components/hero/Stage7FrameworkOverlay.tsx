@@ -200,9 +200,9 @@ export const Stage7FrameworkOverlay = forwardRef<
       {/* ========================================================================= */}
       {/* MOBILE SCREEN LAYOUT (md:hidden) — Pure Mobile View                       */}
       {/* ========================================================================= */}
-      <div className="flex md:hidden flex-col items-center w-full h-full pt-10 pb-8 px-4 relative z-20 pointer-events-auto overflow-hidden">
+      <div className="flex md:hidden flex-col items-center w-full h-full pt-10 pb-8 px-4 relative z-30 pointer-events-auto overflow-hidden">
         {/* Top Header */}
-        <div className="w-full text-center flex flex-col items-center mb-1 select-none">
+        <div className="w-full text-center flex flex-col items-center mb-1 select-none z-40 relative">
           <h2 className="font-['Funnel_Display',sans-serif] font-bold text-white tracking-tight text-[22px] xs:text-[24px] leading-snug">
             The Framework Behind
           </h2>
@@ -212,7 +212,7 @@ export const Stage7FrameworkOverlay = forwardRef<
         </div>
 
         {/* Center 3D Logo Video Emblem (logo.mp4) */}
-        <div data-stage7-logo className="relative w-[210px] xs:w-[240px] aspect-square flex items-center justify-center my-1 select-none pointer-events-none">
+        <div data-stage7-logo className="relative w-[210px] xs:w-[240px] aspect-square flex items-center justify-center my-1 select-none pointer-events-none z-10">
           <video
             src="/assets/logo.mp4"
             autoPlay
@@ -231,27 +231,38 @@ export const Stage7FrameworkOverlay = forwardRef<
         </div>
 
         {/* Sequenced Interactive Framework Step Card Slot */}
-        <div className="relative w-full max-w-[340px] h-[160px] xs:h-[180px] mt-2 flex items-center justify-center">
+        <div className="relative w-full max-w-[340px] h-[360px] xs:h-[400px] mt-2 z-40">
           {FRAMEWORK_STEPS.map((step, idx) => {
-            const activeIdx = Math.max(0, currentIndex);
-            const isActive = idx === activeIdx;
+            const isRevealed = currentIndex >= 0 && idx <= currentIndex;
             const isRight = step.side === "right";
+            const mobileTopPositions = ["top-[-22%]", "top-[6%]", "top-[34%]", "top-[70%]"];
+            const mobileTop = mobileTopPositions[idx] || "top-1/2";
 
             return (
               <div
                 key={step.id}
-                className={`absolute inset-x-0 flex flex-col text-left max-w-[270px] xs:max-w-[300px] transition-all duration-500 ease-out ${
-                  isRight ? "ml-auto pr-1" : "mr-auto pl-1"
+                className={`absolute inset-x-0 ${mobileTop} flex flex-col max-w-[310px] xs:max-w-[340px] z-50 transition-all duration-500 ease-out ${
+                  isRight
+                    ? "ml-auto pr-1 text-right items-end"
+                    : "mr-auto pl-1 text-left items-start"
                 } ${
-                  isActive
+                  isRevealed
                     ? "opacity-100 translate-y-0 scale-100 pointer-events-auto filter-none"
-                    : "opacity-0 translate-y-4 scale-95 pointer-events-none blur-[4px]"
+                    : "opacity-0 translate-y-3 scale-95 pointer-events-none blur-[4px]"
                 }`}
               >
-                <h3 className="font-['Funnel_Display',sans-serif] font-bold text-[20px] xs:text-[23px] text-white tracking-tight leading-snug">
-                  <span className="text-[#D91E1E]">{step.stepNumber}</span> — {step.title}
+                <h3 className="font-['Funnel_Display',sans-serif] font-bold text-[17px] xs:text-[20px] text-white tracking-tight leading-snug whitespace-nowrap">
+                  {isRight ? (
+                    <>
+                      {step.title} — <span className="text-[#D91E1E]">{step.stepNumber}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-[#D91E1E]">{step.stepNumber}</span> — {step.title}
+                    </>
+                  )}
                 </h3>
-                <p className="font-[family-name:var(--font-onest)] font-light text-zinc-300 text-[12.5px] xs:text-[13.5px] leading-relaxed mt-1.5">
+                <p className="font-[family-name:var(--font-onest)] font-light text-zinc-300 text-[12.5px] xs:text-[13.5px] leading-relaxed mt-2 mb-8">
                   {step.description}
                 </p>
               </div>
@@ -261,15 +272,15 @@ export const Stage7FrameworkOverlay = forwardRef<
       </div>
 
       {/* ========================================================================= */}
-      {/* PC / DESKTOP SCREEN LAYOUT (hidden md:flex) — 100% UNTOUCHED ORIGINAL     */}
+      {/* PC / DESKTOP SCREEN LAYOUT (hidden md:flex) — Top-Layered Content Stack   */}
       {/* ========================================================================= */}
-      <div className="hidden md:flex relative w-full max-w-[1920px] mx-auto px-6 sm:px-10 md:px-16 lg:px-[82px] h-full flex-col justify-between pt-[75px] sm:pt-[90px] md:pt-[105px] pb-8 sm:pb-12 pointer-events-none z-10">
+      <div className="hidden md:flex relative w-full max-w-[1920px] mx-auto px-6 sm:px-10 md:px-16 lg:px-[82px] h-full flex-col justify-between pt-[75px] sm:pt-[90px] md:pt-[105px] pb-8 sm:pb-12 pointer-events-none z-30">
         
         {/* Top Centered Header */}
         <div
           data-stage7-header
           style={{ opacity: 0 }}
-          className="w-full text-center flex flex-col items-center pointer-events-auto mt-1 sm:mt-2"
+          className="w-full text-center flex flex-col items-center pointer-events-auto mt-1 sm:mt-2 z-40 relative"
         >
           <h2 className="font-['Funnel_Display',sans-serif] font-semibold text-white tracking-tight text-[clamp(24px,3.2vw,48px)] leading-[1.05]">
             The Framework Behind
@@ -280,15 +291,15 @@ export const Stage7FrameworkOverlay = forwardRef<
         </div>
 
         {/* Middle Interactive Composition: Lifted Center 3D Logo & Persistent Staggered Framework Cards */}
-        <div className="relative w-full flex-1 flex items-center justify-center -mt-4 sm:-mt-8 lg:-mt-10">
+        <div className="relative w-full flex-1 flex items-center justify-center -mt-4 sm:-mt-8 lg:-mt-10 z-30">
           
           {/* Central Ink Flow Video Emblem (logo.mp4) with Screen Blend & Pointer Parallax */}
           <div
             data-stage7-logo
-            className="relative w-[min(100vw,1260px)] lg:w-[min(100vw,1360px)] aspect-[16/9] flex items-center justify-center pointer-events-auto select-none z-10"
+            className="relative w-[min(100vw,1260px)] lg:w-[min(100vw,1360px)] aspect-[16/9] flex items-center justify-center pointer-events-none select-none z-10"
           >
             <div
-              className="relative w-full h-full flex items-center justify-center transform-gpu"
+              className="relative w-full h-full flex items-center justify-center transform-gpu pointer-events-none"
               style={{
                 transform: `translate3d(${(mousePos.x * 20).toFixed(1)}px, ${(mousePos.y * -20).toFixed(1)}px, 0)`,
                 willChange: "transform",
@@ -313,7 +324,7 @@ export const Stage7FrameworkOverlay = forwardRef<
             </div>
           </div>
 
-          {/* Alternating Framework Step Cards (Persistent Scroll Timeline) */}
+          {/* Alternating Framework Step Cards (Persistent Scroll Timeline on Desktop) */}
           {FRAMEWORK_STEPS.map((step, idx) => {
             const isActive = idx === currentIndex;
             const isRight = step.side === "right";
@@ -328,10 +339,10 @@ export const Stage7FrameworkOverlay = forwardRef<
             return (
               <div
                 key={step.id}
-                className={`absolute top-1/2 flex flex-col items-start text-left max-w-[340px] sm:max-w-[390px] select-none pointer-events-none transition-all duration-[750ms] cubic-bezier(0.16, 1, 0.3, 1) ${
+                className={`absolute top-1/2 flex flex-col max-w-[380px] lg:max-w-[440px] select-none z-50 transition-all duration-[750ms] cubic-bezier(0.16, 1, 0.3, 1) ${
                   isRight
-                    ? "right-0 sm:right-4 lg:right-10 xl:right-14"
-                    : "left-0 sm:left-4 lg:left-10 xl:left-14"
+                    ? "right-0 sm:right-4 lg:right-10 xl:right-14 items-end text-right"
+                    : "left-0 sm:left-4 lg:left-10 xl:left-14 items-start text-left"
                 } ${
                   isActive
                     ? "opacity-100 pointer-events-auto filter-none"
@@ -342,9 +353,17 @@ export const Stage7FrameworkOverlay = forwardRef<
                   transitionProperty: "opacity, transform, filter",
                 }}
               >
-                <div className="flex items-center gap-2">
-                  <h3 className="font-['Funnel_Display',sans-serif] font-bold text-[clamp(22px,2.2vw,30px)] text-white tracking-tight">
-                    <span className="text-[#D91E1E]">{step.stepNumber}</span> — {step.title}
+                <div className={`flex items-center gap-2 ${isRight ? "justify-end" : "justify-start"}`}>
+                  <h3 className="font-['Funnel_Display',sans-serif] font-bold text-[clamp(20px,2vw,30px)] text-white tracking-tight whitespace-nowrap">
+                    {isRight ? (
+                      <>
+                        {step.title} — <span className="text-[#D91E1E]">{step.stepNumber}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-[#D91E1E]">{step.stepNumber}</span> — {step.title}
+                      </>
+                    )}
                   </h3>
                 </div>
                 

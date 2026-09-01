@@ -79,7 +79,7 @@ export const Stage2OverviewOverlay = forwardRef<
       {/* ========================================================================= */}
       <div className="hidden md:block w-full h-full relative">
         {/* Main Top Headline */}
-        <div className="absolute top-[clamp(70px,11vh,120px)] left-[clamp(24px,4.3vw,82px)] max-w-[clamp(320px,50vw,920px)] pointer-events-auto z-20">
+        <div className="absolute top-[clamp(70px,11vh,120px)] left-[clamp(24px,4.3vw,82px)] max-w-[clamp(320px,50vw,920px)] pointer-events-auto z-30 [transform:translate3d(0,0,20px)]">
           <h2 className="font-['Funnel_Display',sans-serif] font-normal leading-[1.02] tracking-[-0.035em] text-[clamp(26px,3.6vw,68px)] capitalize flex flex-wrap gap-x-[0.28em] gap-y-1">
             {HEADLINE_WORDS.map((word, wIdx) => (
               <span key={wIdx} className="inline-flex whitespace-nowrap">
@@ -102,7 +102,7 @@ export const Stage2OverviewOverlay = forwardRef<
         </div>
 
         {/* 3D Floating Interactive Glass Cards Canvas */}
-        <div className="absolute inset-0 pointer-events-none z-10 [perspective:1400px]">
+        <div className="absolute inset-0 pointer-events-none z-10 [perspective:1400px] [transform:translate3d(0,0,-20px)]">
           {/* Card 1: Web / Digital Platform (-24.54 deg) */}
           <div
             data-card="1"
@@ -134,7 +134,7 @@ export const Stage2OverviewOverlay = forwardRef<
           <div
             data-card="2"
             style={{ opacity: 0 }}
-            className="absolute left-1/2 -translate-x-1/2 bottom-[clamp(25px,6vh,80px)] w-[clamp(180px,18vw,330px)] pointer-events-none transition-filter duration-75"
+            className="absolute left-[calc(50%+40px)] -translate-x-1/2 bottom-[clamp(25px,6vh,80px)] w-[clamp(180px,18vw,330px)] pointer-events-none transition-filter duration-75"
           >
             <div
               style={

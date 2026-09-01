@@ -13,10 +13,12 @@ export const ScrollHintIndicator: React.FC<ScrollHintIndicatorProps> = ({
   totalSteps,
   onScrollNext,
 }) => {
+  const isFrameworkStage = activeStep >= 10 && activeStep <= 14;
+
   return (
     <div
       className={`fixed bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-40 transition-all duration-700 ease-out pointer-events-auto ${
-        showScrollHint && activeStep < totalSteps - 1
+        showScrollHint && !isFrameworkStage && activeStep < totalSteps - 1
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-4 pointer-events-none"
       }`}

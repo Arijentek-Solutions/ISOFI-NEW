@@ -9,21 +9,20 @@ export const Stage1HeroOverlay = forwardRef<HTMLDivElement>((props, ref) => {
       className="absolute inset-0 pointer-events-none w-full max-w-[1920px] mx-auto px-5 sm:px-10 md:px-16 lg:px-[82px] py-0 md:py-4 lg:py-[25px] transition-opacity duration-75 overflow-x-hidden"
     >
       {/* ========================================================================= */}
-      {/* MOBILE SCREEN HERO LAYOUT (md:hidden) */}
-      {/* Matches user target image: Large robot filling lower screen directly below text */}
+      {/* MOBILE SCREEN HERO LAYOUT (md:hidden) — Centered Phone Layout             */}
       {/* ========================================================================= */}
-      <div className="flex md:hidden flex-col items-start text-left w-full h-full pt-[70px] px-4 pb-0 overflow-y-auto overflow-x-hidden pointer-events-auto">
-        <div className="shrink-0 w-full">
-          <h1 className="font-[family-name:var(--font-chakra)] font-bold text-black uppercase tracking-tight leading-[0.95] text-[38px] xs:text-[44px]">
+      <div className="flex md:hidden flex-col items-center text-center w-full h-full pt-[calc(70px+1cm)] px-5 pb-0 overflow-y-auto overflow-x-hidden pointer-events-auto">
+        <div className="shrink-0 w-full flex flex-col items-center text-center">
+          <h1 className="font-[family-name:var(--font-chakra)] font-bold text-black uppercase tracking-tight leading-[0.95] text-[36px] xs:text-[42px]">
             <span className="block">Innovative</span>
             <span className="block">Tech</span>
           </h1>
           
-          <p className="font-[family-name:var(--font-chakra)] font-bold text-black uppercase leading-[1.15] text-[18px] xs:text-[20px] mt-1.5">
+          <p className="font-[family-name:var(--font-chakra)] font-bold text-black uppercase leading-[1.15] text-[17px] xs:text-[19px] mt-2">
             Infinite Growth.
           </p>
 
-          <p className="font-[family-name:var(--font-onest)] font-light text-zinc-600 text-[13px] xs:text-[14px] leading-relaxed mt-2.5 max-w-[340px]">
+          <p className="font-[family-name:var(--font-onest)] font-light text-zinc-600 text-[13px] xs:text-[14px] leading-relaxed mt-2.5 max-w-[330px] mx-auto text-center">
             Intelligent Systems. Advanced digital partner. Combining brutalist
             design, full-stack architecture, and deep AI integration. Scroll
             to activate adaptive performance layers.

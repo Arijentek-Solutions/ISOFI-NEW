@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -12,57 +12,114 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollYRef = useRef(0);
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY || document.documentElement.scrollTop;
+    let ticking = false;
 
-      if (currentScrollY <= 80) {
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY && currentScrollY - lastScrollY > 4) {
-        // Scrolling down: hide navbar
-        setIsVisible(false);
-      } else if (currentScrollY < lastScrollY && lastScrollY - currentScrollY > 4) {
-        // Scrolling up: pop navbar down
-        setIsVisible(true);
+    const checkNavbarBackground = () => {
+      if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+      const navY = 36;
+      const navX = window.innerWidth / 2;
+      const elements = document.elementsFromPoint(navX, navY);
+
+      for (const el of elements) {
+        if (el.closest('header')) continue;
+
+        // 1. Check if element or ancestor is explicitly a black/dark container
+        const darkContainer = el.closest(
+          '.bg-black, [class*="bg-[#000000]"], [class*="bg-[#050505]"], [class*="bg-[#070707]"], [class*="bg-[#080808]"], [class*="bg-[#0a0a0a]"], [class*="bg-[#0b0a0e]"], [class*="bg-zinc-950"], [data-theme="dark"]'
+        );
+        if (darkContainer) {
+          setIsDark(true);
+          return;
+        }
+
+        // 2. Check computed background color of element
+        const style = window.getComputedStyle(el);
+        const bg = style.backgroundColor;
+        if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') {
+          const match = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+          if (match) {
+            const a = match[4] !== undefined ? parseFloat(match[4]) : 1;
+            if (a > 0.1) {
+              const r = parseInt(match[1], 10);
+              const g = parseInt(match[2], 10);
+              const b = parseInt(match[3], 10);
+              const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+              setIsDark(brightness < 130);
+              return;
+            }
+          }
+        }
       }
 
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
-
-  useEffect(() => {
-    const checkDark = () => {
+      // 3. Fallback: check documentElement data-theme
       const dataTheme = document.documentElement.getAttribute('data-theme');
       if (dataTheme) {
         setIsDark(dataTheme === 'dark');
       } else {
-        setIsDark(window.matchMedia('(prefers-color-scheme: dark)').matches);
+        setIsDark(false);
       }
     };
 
-    checkDark();
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY || document.documentElement.scrollTop;
+      const prevScrollY = lastScrollYRef.current;
+      const diff = currentScrollY - prevScrollY;
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handler = () => checkDark();
-    mediaQuery.addEventListener('change', handler);
+      // Down scroll: hide navbar
+      if (diff > 4 && currentScrollY > 60) {
+        setIsVisible(false);
+      }
+      // Up scroll: open navbar (or when near top)
+      else if (diff < -4 || currentScrollY <= 30) {
+        setIsVisible(true);
+      }
 
-    const observer = new MutationObserver(() => checkDark());
+      lastScrollYRef.current = currentScrollY;
+
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          checkNavbarBackground();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      // DeltaY > 8 means scrolling down
+      if (e.deltaY > 8 && window.scrollY > 40) {
+        setIsVisible(false);
+      }
+      // DeltaY < -8 means scrolling up
+      else if (e.deltaY < -8) {
+        setIsVisible(true);
+      }
+    };
+
+    checkNavbarBackground();
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('wheel', handleWheel, { passive: true });
+    window.addEventListener('resize', checkNavbarBackground, { passive: true });
+
+    const observer = new MutationObserver(() => checkNavbarBackground());
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['data-theme'],
     });
 
     return () => {
-      mediaQuery.removeEventListener('change', handler);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('resize', checkNavbarBackground);
       observer.disconnect();
     };
-  }, []);
+  }, [pathname]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -78,7 +135,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`w-full fixed top-0 inset-x-0 z-[100] font-sans pointer-events-none transition-transform duration-500 ease-out ${
+      className={`w-full fixed top-0 inset-x-0 z-[100] font-sans pointer-events-none transition-transform duration-350 ease-out ${
         isVisible || isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
       }`}
       data-node-id="239:1339"
@@ -98,10 +155,9 @@ export function Navbar() {
           redOffset={0}
           greenOffset={2}
           blueOffset={5}
-          brightness={50}
-          opacity={0.95}
+          opacity={1}
           mixBlendMode="normal"
-          backgroundOpacity={isDark ? 0.25 : 0.1}
+          backgroundOpacity={0}
         />
 
         {/* Content layer */}
@@ -154,7 +210,8 @@ export function Navbar() {
             {navLinks.map((item) => {
               const isActive =
                 pathname === item.href ||
-                (item.href === '/services' && (pathname === '/service' || pathname === '/services'));
+                (item.href === '/services' && (pathname === '/service' || pathname === '/services')) ||
+                (item.href === '/contact' && (pathname === '/contact' || pathname === '/connect'));
 
               return (
                 <Link
@@ -223,7 +280,8 @@ export function Navbar() {
           {navLinks.map((item) => {
             const isActive =
               pathname === item.href ||
-              (item.href === '/services' && (pathname === '/service' || pathname === '/services'));
+              (item.href === '/services' && (pathname === '/service' || pathname === '/services')) ||
+              (item.href === '/contact' && (pathname === '/contact' || pathname === '/connect'));
 
             return (
               <Link

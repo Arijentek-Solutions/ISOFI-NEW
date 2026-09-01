@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import * as THREE from "three";
 import { SilkBackgroundAnimation } from "@/components/ui/silk-background-animation";
-
+import Image from "next/image";
 import { Logo } from "@/components/common/Logo";
 
 export interface WovenLightHeroProps {
@@ -30,7 +30,7 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
   };
 
   return (
-    <div className="relative isolate h-screen w-full overflow-hidden bg-black text-white selection:bg-[#D01919] selection:text-white flex flex-col justify-between pt-16 sm:pt-20 md:pt-24 select-none">
+    <div className="relative isolate min-h-screen lg:h-screen w-full overflow-hidden bg-black text-white selection:bg-[#D01919] selection:text-white flex flex-col justify-between pt-24 sm:pt-28 lg:pt-20 select-none">
       {/* 1. Dynamic Animated Silk Background (Very Subtle Ambient Background ~20% Opacity) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-20">
         <SilkBackgroundAnimation colorScheme="dark" showText={false} speed={1.1} />
@@ -40,37 +40,37 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
       </div>
 
       {/* 2. Main Split Stage Content */}
-      <main className="relative z-20 w-full max-w-[1920px] mx-auto px-6 sm:px-10 md:px-16 lg:px-[82px] flex-1 grid grid-cols-1 lg:grid-cols-12 items-center gap-8 pointer-events-none">
+      <main className="relative z-20 w-full max-w-[1920px] mx-auto px-5 sm:px-8 md:px-14 lg:px-[82px] flex-1 grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-8 pointer-events-none py-2 sm:py-4 lg:py-0">
         
         {/* LEFT COLUMN: Typography & Interactive Submit Form (~55% width) - Always Visible */}
-        <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center pointer-events-auto z-20 max-w-[760px] opacity-100">
+        <div className="lg:col-span-6 xl:col-span-7 flex flex-col justify-center pointer-events-auto z-20 max-w-[760px] opacity-100 my-auto">
           {/* Main Headline */}
-          <h1 className="font-['Funnel_Display',sans-serif] font-bold text-white tracking-[-0.02em] text-[clamp(36px,4.8vw,78px)] leading-[1.01] uppercase">
+          <h1 className="font-['Funnel_Display',sans-serif] font-bold text-white tracking-[-0.02em] text-[clamp(28px,4.5vw,74px)] leading-[1.01] uppercase">
             WHAT ARE YOU <br />
             BUILDING NEXT <span className="text-[#D01919]">?</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="font-['Poppins',sans-serif] font-light text-zinc-300/90 text-sm sm:text-base lg:text-[21px] leading-relaxed mt-4 sm:mt-5 max-w-[620px]">
+          <p className="font-[family-name:var(--font-onest)] font-light text-zinc-300/90 text-xs sm:text-sm lg:text-[18px] xl:text-[20px] leading-relaxed mt-3 sm:mt-4 max-w-[600px]">
             {subheadline}
           </p>
 
           {/* Glassmorphic Input & Action Button */}
-          <form onSubmit={handleSubmit} className="mt-8 sm:mt-10 flex flex-col gap-4 max-w-[620px]">
+          <form onSubmit={handleSubmit} className="mt-5 sm:mt-7 flex flex-col gap-3 sm:gap-4 max-w-[600px]">
             <div className="relative w-full rounded-xl border border-white/15 bg-black/40 backdrop-blur-xl transition-all duration-300 focus-within:border-[#D01919]/70 focus-within:shadow-[0_0_30px_rgba(208,25,25,0.15)]">
               <textarea
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Type your project vision or message..."
-                rows={3}
-                className="w-full resize-none bg-transparent p-4 text-sm sm:text-base text-white placeholder-zinc-500 focus:outline-none"
+                rows={2}
+                className="w-full resize-none bg-transparent p-3 sm:p-4 text-xs sm:text-sm md:text-base text-white placeholder-zinc-500 focus:outline-none"
               />
             </div>
 
             <div>
               <button
                 type="submit"
-                className="cursor-pointer rounded-md bg-[#D01919] px-8 sm:px-12 py-3 sm:py-3.5 font-['Poppins',sans-serif] text-sm sm:text-base font-bold uppercase tracking-wider text-white shadow-[0_0_25px_rgba(208,25,25,0.35)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#b01414] hover:shadow-[0_0_35px_rgba(208,25,25,0.55)] active:scale-95"
+                className="cursor-pointer rounded-md bg-[#D01919] px-6 sm:px-10 py-2.5 sm:py-3 font-[family-name:var(--font-onest)] text-xs sm:text-sm md:text-base font-bold uppercase tracking-wider text-white shadow-[0_0_25px_rgba(208,25,25,0.35)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#b01414] hover:shadow-[0_0_35px_rgba(208,25,25,0.55)] active:scale-95"
               >
                 SUBMIT
               </button>
@@ -79,9 +79,9 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
         </div>
 
         {/* RIGHT COLUMN: Interactive 3D ISOFINITI Infinity Particle System (~45% width) */}
-        <div className="lg:col-span-6 xl:col-span-6 h-[400px] sm:h-[500px] lg:h-[580px] w-full relative flex items-center justify-center pointer-events-auto">
+        <div className="lg:col-span-6 xl:col-span-5 h-[300px] xs:h-[360px] sm:h-[420px] md:h-[480px] lg:h-[540px] w-full relative flex items-center justify-center pointer-events-auto my-auto translate-y-6 sm:translate-y-8 lg:translate-y-10">
           {/* Subtle Ambient Vignette Behind 3D Logo (Pure Monochrome) */}
-          <div className="absolute w-[380px] h-[380px] rounded-full bg-white/[0.03] blur-[80px] pointer-events-none" />
+          <div className="absolute w-[240px] sm:w-[320px] lg:w-[380px] h-[240px] sm:h-[320px] lg:h-[380px] rounded-full bg-white/[0.03] blur-[70px] pointer-events-none" />
 
           {/* 3D Three.js Woven Emblem Canvas with Bold Red Diagonal Prisms */}
           <div className="relative w-full h-full flex items-center justify-center">
@@ -90,38 +90,54 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
         </div>
       </main>
 
-      {/* 3. Bottom Footer Status Bar */}
-      <footer className="relative z-30 w-full max-w-[1920px] mx-auto px-6 sm:px-10 md:px-16 lg:px-[82px] py-6 sm:py-8 flex flex-col sm:flex-row items-center justify-between gap-6 pointer-events-auto border-t border-white/[0.08]">
-        {/* Bottom Left Navigation & Official Brand Logo */}
-        <div className="flex flex-col gap-3">
-          <nav className="flex items-center gap-6 sm:gap-9 font-['Inter',sans-serif] text-xs font-semibold tracking-[1.5px] uppercase text-zinc-400">
-            <a href="#home" className="hover:text-white transition-colors">HOME</a>
-            <a href="#services" className="hover:text-white transition-colors">SERVICES</a>
-            <a href="#case-studies" className="hover:text-white transition-colors">CASE STUDIES</a>
-            <a href="#about" className="hover:text-white transition-colors">ABOUT</a>
-            <a href="#connect" className="hover:text-white transition-colors">CONNECT</a>
-          </nav>
-          
-          {/* Official ISOFINITI Logo (matching Navbar exactly) */}
-          <div className="flex items-center gap-2 mt-1">
-            <Logo fill="#FFFFFF" accentColor="#D01919" width={145} height={19} />
+      {/* 3. Bottom Footer Status Bar matching user's exact specification */}
+      <footer className="relative z-30 w-full max-w-[1920px] mx-auto px-6 sm:px-10 md:px-14 lg:px-[82px] pt-6 sm:pt-8 pb-6 sm:pb-8 flex flex-col pointer-events-auto">
+        {/* Menu & Legal Columns */}
+        <div className="grid grid-cols-2 gap-8 sm:gap-12 md:gap-20 w-full max-w-[480px]">
+          {/* Menu Column */}
+          <div className="flex flex-col gap-2.5 sm:gap-3">
+            <span className="font-['Inter',sans-serif] text-[11px] sm:text-[12px] font-medium tracking-[1.2px] uppercase text-white/60">
+              MENU
+            </span>
+            <div className="flex flex-col gap-2 font-['Inter',sans-serif] text-[13.5px] sm:text-[15px] font-normal text-white/90">
+              <a href="/" className="hover:text-white transition-colors">Home</a>
+              <a href="/services" className="hover:text-white transition-colors">Services</a>
+              <a href="/case-studies" className="hover:text-white transition-colors">Case Studies</a>
+              <a href="/about" className="hover:text-white transition-colors">About</a>
+              <a href="/contact" className="hover:text-white transition-colors">Contacts</a>
+            </div>
+          </div>
+
+          {/* Legal Column */}
+          <div className="flex flex-col gap-2.5 sm:gap-3">
+            <span className="font-['Inter',sans-serif] text-[11px] sm:text-[12px] font-medium tracking-[1.2px] uppercase text-white/60">
+              LEGAL
+            </span>
+            <div className="flex flex-col gap-2 font-['Inter',sans-serif] text-[13.5px] sm:text-[15px] font-normal text-white/90">
+              <a href="#privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#terms" className="hover:text-white transition-colors">Terms of Service</a>
+            </div>
           </div>
         </div>
 
-        {/* Bottom Right Actions */}
-        <div className="flex items-center gap-8 font-['Onest',sans-serif] font-bold text-xs sm:text-sm tracking-wider uppercase text-white pr-6 sm:pr-12 md:pr-16">
-          <button
-            onClick={onStartProject}
-            className="cursor-pointer text-zinc-300 hover:text-white transition-colors"
-          >
-            START A PROJECT
-          </button>
-          <button
-            onClick={onViewWork}
-            className="cursor-pointer text-[#D01919] hover:text-white transition-colors flex items-center gap-1.5"
-          >
-            VIEW OUR WORK <span>→</span>
-          </button>
+        {/* Glowing Red Accent Divider Line */}
+        <div className="w-full h-[1px] bg-gradient-to-r from-[#D01919]/40 via-[#D01919] to-[#D01919]/40 shadow-[0_0_16px_rgba(208,25,25,0.9)] opacity-85 mt-6 sm:mt-8 mb-4 sm:mb-5" />
+
+        {/* Bottom Row: ISOFINITI Text Logo (Left) + FullIcon Bracket Emblem (Right) */}
+        <div className="flex items-center justify-between w-full pt-1">
+          <div className="flex items-center">
+            <Logo fill="#FFFFFF" accentColor="#D01919" width={138} height={18} className="w-[124px] sm:w-[140px] h-auto" />
+          </div>
+
+          <div className="flex items-center">
+            <Image
+              src="/logo/FullIcon.svg"
+              alt="ISOFINITI Emblem"
+              width={34}
+              height={34}
+              className="w-7 sm:w-8 h-7 sm:h-8 object-contain"
+            />
+          </div>
         </div>
       </footer>
     </div>
@@ -326,6 +342,7 @@ const WovenCanvas: React.FC<WovenCanvasProps> = ({
     });
 
     const points = new THREE.Points(geometry, material);
+    points.position.set(0, 0.75, 0);
     scene.add(points);
 
     let targetMouseX = 0;

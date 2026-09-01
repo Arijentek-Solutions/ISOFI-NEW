@@ -17,7 +17,7 @@ export const Stage10WovenLightOverlay = forwardRef<
       style={{ visibility: "hidden" }}
       className="absolute inset-0 pointer-events-none w-full h-full z-30 overflow-hidden select-none"
     >
-      <div className="w-full h-full pointer-events-auto">
+      <div className="w-full h-full pointer-events-auto overflow-y-auto lg:overflow-hidden">
         <WovenLightHero
           headline="WHAT ARE YOU&#10;BUILDING NEXT ?"
           subheadline="Tell us what you're trying to build, improve or automate."
