@@ -69,6 +69,7 @@ export function HeroScrollAnimation() {
   const isAnimatingLockRef = useRef(false);
   const lockTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const eruptionPlayedRef = useRef(false);
+  const autoScrollTriggeredRef = useRef(false);
 
   // Preload all frames on desktop only to optimize mobile performance
   useEffect(() => {
@@ -194,13 +195,17 @@ export function HeroScrollAnimation() {
     const isFastStepTransition =
       clampedIndex >= 10 && currentStepRef.current >= 10;
 
-    currentDurationRef.current = isCardFlipTransition
-      ? 750
-      : isFastStepTransition
-        ? 700
-        : isVideoOrLogoTransition
-          ? 950
-          : 1100;
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+    currentDurationRef.current = isMobile
+      ? 850
+      : isCardFlipTransition
+        ? 1800
+        : isFastStepTransition
+          ? 1600
+          : isVideoOrLogoTransition
+            ? 2200
+            : 2600;
 
     isNavigatingUpRef.current = clampedIndex < currentStepRef.current;
     currentStepRef.current = clampedIndex;
@@ -212,10 +217,49 @@ export function HeroScrollAnimation() {
     transitionStartTimeRef.current = performance.now();
     isTransitioningRef.current = true;
 
-    // Strictly lock input during transition so continuous scrolling cannot skip sections
+    // Lock input during 850ms transition so stage settles firmly before next swipe
     isAnimatingLockRef.current = true;
     if (lockTimeoutRef.current) clearTimeout(lockTimeoutRef.current);
+    lockTimeoutRef.current = setTimeout(() => {
+      isAnimatingLockRef.current = false;
+    }, currentDurationRef.current + 50);
   }, []);
+
+  // Trigger initial autoscroll after page loader completes (desktop only)
+  useEffect(() => {
+    let autoScrollTimer: NodeJS.Timeout | null = null;
+
+    const startAutoScroll = () => {
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+      if (isMobile) return; // Disable initial autoscroll on mobile viewports
+
+      if (autoScrollTriggeredRef.current) return;
+      autoScrollTimer = setTimeout(() => {
+        if (!autoScrollTriggeredRef.current && currentStepRef.current === 0) {
+          autoScrollTriggeredRef.current = true;
+          goToStep(1);
+        }
+      }, 500);
+    };
+
+    if (typeof window !== "undefined") {
+      if ((window as unknown as { pageLoaderDone?: boolean }).pageLoaderDone) {
+        startAutoScroll();
+      } else {
+        window.addEventListener("pageLoaderDone", startAutoScroll, { once: true });
+        const fallbackTimer = setTimeout(startAutoScroll, 2800);
+        return () => {
+          window.removeEventListener("pageLoaderDone", startAutoScroll);
+          clearTimeout(fallbackTimer);
+          if (autoScrollTimer) clearTimeout(autoScrollTimer);
+        };
+      }
+    }
+
+    return () => {
+      if (autoScrollTimer) clearTimeout(autoScrollTimer);
+    };
+  }, [goToStep]);
 
   // Arm the idle hint timer on initial website entry
   useEffect(() => {
@@ -308,21 +352,42 @@ export function HeroScrollAnimation() {
       renderFrame(frameToDraw);
 
       // ----------------------------------------------------
-      // STICKY NAVBAR MANAGEMENT: Hide on Stage 7, Show on all other stages
+      // STICKY NAVBAR MANAGEMENT:
+      // PC: Hide when scrolling forward through stages, Show when scrolling backward or at Step 0
       // ----------------------------------------------------
       const navEl = document.getElementById("global-navbar");
       if (navEl) {
+        const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768;
         const isStage7 = p >= 0.91 && p <= 1.39;
-        if (isStage7) {
-          navEl.style.opacity = "0";
-          navEl.style.pointerEvents = "none";
-          navEl.style.transform = "translate3d(0, -100%, 0)";
-          navEl.style.visibility = "hidden";
+
+        if (isDesktop) {
+          const shouldHideNavbar =
+            isStage7 ||
+            (currentStepRef.current > 0 && !isNavigatingUpRef.current);
+
+          if (shouldHideNavbar) {
+            navEl.style.opacity = "0";
+            navEl.style.pointerEvents = "none";
+            navEl.style.transform = "translate3d(0, -100%, 0)";
+            navEl.style.visibility = "hidden";
+          } else {
+            navEl.style.opacity = "1";
+            navEl.style.pointerEvents = "auto";
+            navEl.style.transform = "translate3d(0, 0, 0)";
+            navEl.style.visibility = "visible";
+          }
         } else {
-          navEl.style.opacity = "1";
-          navEl.style.pointerEvents = "auto";
-          navEl.style.transform = "translate3d(0, 0, 0)";
-          navEl.style.visibility = "visible";
+          if (isStage7) {
+            navEl.style.opacity = "0";
+            navEl.style.pointerEvents = "none";
+            navEl.style.transform = "translate3d(0, -100%, 0)";
+            navEl.style.visibility = "hidden";
+          } else {
+            navEl.style.opacity = "1";
+            navEl.style.pointerEvents = "auto";
+            navEl.style.transform = "translate3d(0, 0, 0)";
+            navEl.style.visibility = "visible";
+          }
         }
       }
 
@@ -472,8 +537,7 @@ export function HeroScrollAnimation() {
               charEl.style.transform = `translate3d(0, ${translateY.toFixed(
                 1
               )}px, 0) scale(${scale.toFixed(3)})`;
-              charEl.style.filter =
-                blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : "none";
+              charEl.style.filter = "none";
               charEl.style.color = `rgb(${r}, ${g}, ${b})`;
             });
           }
@@ -610,30 +674,53 @@ export function HeroScrollAnimation() {
             )}px) grayscale(${grayscaleAmount.toFixed(0)}%)`;
           }
         }
-      }
-
-      // ----------------------------------------------------
+      }      // ----------------------------------------------------
       // E. STAGE 3: "BUILT AROUND WHAT YOUR BUSINESS NEEDS." + 2-PHASE FLIP DECK
       // ----------------------------------------------------
       if (stage3ContainerRef.current) {
         const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+        const shiftNorm = clamp((p - 0.38) / 0.12, 0, 1);
+        setCurrentPhase(shiftNorm >= 0.5 ? 2 : 1);
+
         if (isMobile) {
-          const s3InP = clamp((p - 0.28) / 0.06, 0, 1);
-          const s3OutP = clamp((p - 0.48) / 0.06, 0, 1);
+          // On mobile: Enters from Stage 2 (0.28 -> 0.32), Active for Step 3 (0.38), Fades out cleanly before Stage 4 (0.42 -> 0.50)
+          const s3InP = clamp((p - 0.28) / 0.04, 0, 1);
+          const s3OutP = clamp((p - 0.42) / 0.08, 0, 1);
           const s3Opacity = s3InP * (1 - s3OutP);
-          const s3Active = p >= 0.28 && p <= 0.54;
+          const s3Active = p >= 0.28 && p <= 0.50;
 
           stage3ContainerRef.current.style.opacity = s3Opacity.toFixed(3);
           stage3ContainerRef.current.style.transform = "translate3d(0, 0, 0)";
           stage3ContainerRef.current.style.visibility = s3Active ? "visible" : "hidden";
-          stage3ContainerRef.current.style.pointerEvents = s3Active && s3Opacity > 0.3 ? "auto" : "none";
+          stage3ContainerRef.current.style.pointerEvents = s3Active && s3Opacity > 0.1 ? "auto" : "none";
+          stage3ContainerRef.current.style.filter = "none";
 
           const stage3Chars = stage3ContainerRef.current.querySelectorAll("[data-stage3-char]");
           stage3Chars.forEach((el) => {
             const charEl = el as HTMLElement;
-            charEl.style.opacity = s3InP > 0.1 ? "1" : "0";
+            charEl.style.opacity = "1";
             charEl.style.transform = "none";
+            charEl.style.filter = "none";
             charEl.style.color = "rgb(15, 15, 15)";
+          });
+
+          [1, 2, 3].forEach((slotIdx) => {
+            const slotEl = stage3ContainerRef.current?.querySelector(`[data-stage3-slot='${slotIdx}']`) as HTMLElement;
+            const p1CardEl = stage3ContainerRef.current?.querySelector(`[data-card-layer='${slotIdx}-p1']`) as HTMLElement;
+            const p2CardEl = stage3ContainerRef.current?.querySelector(`[data-card-layer='${slotIdx}-p2']`) as HTMLElement;
+
+            if (slotEl) {
+              slotEl.style.opacity = "1";
+              slotEl.style.transform = "none";
+            }
+            if (p1CardEl && p2CardEl) {
+              p1CardEl.style.opacity = "1";
+              p1CardEl.style.transform = "none";
+              p1CardEl.style.pointerEvents = "auto";
+
+              p2CardEl.style.opacity = "0";
+              p2CardEl.style.pointerEvents = "none";
+            }
           });
         } else {
           // 1. Stage 3 Headline: Letter-by-Letter Zoom-Out (Entrance: 0.34 -> 0.38)
@@ -669,16 +756,13 @@ export function HeroScrollAnimation() {
             charEl.style.transform = `translate3d(0, ${translateY.toFixed(
               1
             )}px, 0) scale(${scale.toFixed(3)})`;
-            charEl.style.filter =
-              blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : "none";
+            charEl.style.filter = "none";
             charEl.style.color = `rgb(${r}, ${g}, ${b})`;
           });
         }
 
         // 2. Stage 3 Phase Transition: Phase 1 Glides Left & Fades Out -> Phase 2 Glides in from Right & Fades In
         const s3EntranceP = clamp(p, 0.34, 0.38);
-        const shiftNorm = clamp((p - 0.38) / 0.12, 0, 1);
-        setCurrentPhase(shiftNorm >= 0.5 ? 2 : 1);
 
         const cardsExitP = clamp(p, 0.5, 0.56);
         const cardsExitY = cardsExitP * 40 + whiteExitY;
@@ -754,17 +838,17 @@ export function HeroScrollAnimation() {
       if (stage4ContainerRef.current) {
         const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
         if (isMobile) {
-          const s4InP = clamp((p - 0.50) / 0.05, 0, 1);
-          const s4OutP = clamp((p - 0.60) / 0.05, 0, 1);
+          // On mobile: Enters cleanly after Stage 3 clears (0.52 -> 0.58), Active at Step 5 (0.60), Exits before Stage 5 (0.62 -> 0.66)
+          const s4InP = clamp((p - 0.52) / 0.06, 0, 1);
+          const s4OutP = clamp((p - 0.62) / 0.04, 0, 1);
           const s4Opacity = s4InP * (1 - s4OutP);
-          const s4Active = p >= 0.50 && p <= 0.65;
+          const s4Active = p >= 0.52 && p <= 0.66;
 
           stage4ContainerRef.current.style.opacity = s4Opacity.toFixed(3);
           stage4ContainerRef.current.style.transform = "translate3d(0, 0, 0)";
           stage4ContainerRef.current.style.visibility = s4Active ? "visible" : "hidden";
-          stage4ContainerRef.current.style.pointerEvents = s4Active && s4Opacity > 0.3 ? "auto" : "none";
-
-          const stage4Chars = stage4ContainerRef.current.querySelectorAll("[data-stage4-char]");
+          stage4ContainerRef.current.style.pointerEvents = s4Active && s4Opacity > 0.1 ? "auto" : "none";
+          stage4ContainerRef.current.style.filter = "none";          const stage4Chars = stage4ContainerRef.current.querySelectorAll("[data-stage4-char]");
           stage4Chars.forEach((el) => {
             const charEl = el as HTMLElement;
             charEl.style.opacity = s4InP > 0.1 ? "1" : "0";
@@ -803,8 +887,7 @@ export function HeroScrollAnimation() {
             charEl.style.transform = `translate3d(0, ${translateY.toFixed(
               1
             )}px, 0) scale(${scale.toFixed(3)})`;
-            charEl.style.filter =
-              blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : "none";
+            charEl.style.filter = "none";
             charEl.style.color = `rgb(${r}, ${g}, ${b})`;
           });
         }
@@ -979,8 +1062,7 @@ export function HeroScrollAnimation() {
           textEl.style.transform = `translate3d(0, ${textTranslateY.toFixed(
             1
           )}px, 0)`;
-          textEl.style.filter =
-            textBlur > 0.2 ? `blur(${textBlur.toFixed(1)}px)` : "none";
+          textEl.style.filter = "none";
         }
       }
 
@@ -1215,35 +1297,97 @@ export function HeroScrollAnimation() {
       if (isTransitioningRef.current || isAnimatingLockRef.current) return;
       if (e.deltaY === 0) return;
 
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
       if (e.deltaY > 0) {
-        if (currentStepRef.current < SECTION_STEPS.length - 1) {
-          goToStep(currentStepRef.current + 1);
+        if (isMobile) {
+          if (currentStepRef.current <= 1) {
+            goToStep(2);
+          } else if (currentStepRef.current === 2) {
+            goToStep(3);
+          } else if (currentStepRef.current === 3 || currentStepRef.current === 4) {
+            goToStep(5);
+          } else if (currentStepRef.current < SECTION_STEPS.length - 1) {
+            goToStep(currentStepRef.current + 1);
+          }
+        } else {
+          if (currentStepRef.current < SECTION_STEPS.length - 1) {
+            goToStep(currentStepRef.current + 1);
+          }
         }
       } else {
         if (currentStepRef.current > 0) {
-          goToStep(currentStepRef.current - 1);
+          if (isMobile) {
+            if (currentStepRef.current <= 2) {
+              goToStep(0);
+            } else if (currentStepRef.current === 3) {
+              goToStep(2);
+            } else if (currentStepRef.current === 4 || currentStepRef.current === 5) {
+              goToStep(3);
+            } else {
+              goToStep(currentStepRef.current - 1);
+            }
+          } else {
+            goToStep(currentStepRef.current - 1);
+          }
         }
       }
     };
 
-    // 2. Sensitive Touch Gestures (Mobile/Tablet Swipe)
+    // 2. Sensitive Touch Gestures (Mobile/Tablet Fast Swipe)
     let touchStartY = 0;
     const handleTouchStart = (e: TouchEvent) => {
+      autoScrollTriggeredRef.current = true;
       resetIdleTimer();
       touchStartY = e.touches[0].clientY;
     };
 
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.cancelable && currentStepRef.current < SECTION_STEPS.length - 1) {
+        e.preventDefault();
+      }
+    };
+
     const handleTouchEnd = (e: TouchEvent) => {
       resetIdleTimer();
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
       if (isTransitioningRef.current || isAnimatingLockRef.current) return;
+
       const touchEndY = e.changedTouches[0].clientY;
       const diffY = touchStartY - touchEndY;
+      const threshold = isMobile ? 6 : 12;
 
-      if (Math.abs(diffY) > 10) {
-        if (diffY > 0 && currentStepRef.current < SECTION_STEPS.length - 1) {
-          goToStep(currentStepRef.current + 1);
+      if (Math.abs(diffY) > threshold) {
+        if (diffY > 0) {
+          if (isMobile) {
+            if (currentStepRef.current <= 1) {
+              goToStep(2);
+            } else if (currentStepRef.current === 2) {
+              goToStep(3);
+            } else if (currentStepRef.current === 3 || currentStepRef.current === 4) {
+              goToStep(5);
+            } else if (currentStepRef.current < SECTION_STEPS.length - 1) {
+              goToStep(currentStepRef.current + 1);
+            }
+          } else {
+            if (currentStepRef.current < SECTION_STEPS.length - 1) {
+              goToStep(currentStepRef.current + 1);
+            }
+          }
         } else if (diffY < 0 && currentStepRef.current > 0) {
-          goToStep(currentStepRef.current - 1);
+          if (isMobile) {
+            if (currentStepRef.current <= 2) {
+              goToStep(0);
+            } else if (currentStepRef.current === 3) {
+              goToStep(2);
+            } else if (currentStepRef.current === 4 || currentStepRef.current === 5) {
+              goToStep(3);
+            } else {
+              goToStep(currentStepRef.current - 1);
+            }
+          } else {
+            goToStep(currentStepRef.current - 1);
+          }
         }
       }
     };
@@ -1278,15 +1422,25 @@ export function HeroScrollAnimation() {
       capture: true,
     });
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("touchend", handleTouchEnd, { passive: true });
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       window.removeEventListener("wheel", handleWheel, { capture: true });
       window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("keydown", handleKeyDown);
       if (lockTimeoutRef.current) clearTimeout(lockTimeoutRef.current);
+
+      const navEl = document.getElementById("global-navbar");
+      if (navEl) {
+        navEl.style.opacity = "";
+        navEl.style.transform = "";
+        navEl.style.visibility = "";
+        navEl.style.pointerEvents = "";
+      }
     };
   }, [goToStep, resetIdleTimer]);
 

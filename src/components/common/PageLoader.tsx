@@ -4,13 +4,12 @@ import { useEffect, useState, useRef } from "react";
 
 export function PageLoader() {
   const [visible, setVisible] = useState(true);
-  const [isZooming, setIsZooming] = useState(false);
   const [isFading, setIsFading] = useState(false);
   const animFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     const startTime = performance.now();
-    const duration = 2400; // 2.4s smooth luxury progression
+    const duration = 2200; // 2.2s loader display duration
 
     const update = (now: number) => {
       const elapsed = now - startTime;
@@ -19,24 +18,17 @@ export function PageLoader() {
       if (raw < 1) {
         animFrameRef.current = requestAnimationFrame(update);
       } else {
-        // Step 1: Spatial camera zoom-through
-        setTimeout(() => {
-          setIsZooming(true);
-        }, 200);
+        // Step 1: Smooth Fade Out Exit
+        setIsFading(true);
 
-        // Step 2: Backdrop fade
-        setTimeout(() => {
-          setIsFading(true);
-        }, 500);
-
-        // Step 3: Complete & Unmount
+        // Step 2: Complete & Unmount after fade transition (600ms)
         setTimeout(() => {
           setVisible(false);
           if (typeof window !== "undefined") {
             (window as unknown as { pageLoaderDone: boolean }).pageLoaderDone = true;
             window.dispatchEvent(new CustomEvent("pageLoaderDone"));
           }
-        }, 900);
+        }, 600);
       }
     };
 
@@ -52,41 +44,6 @@ export function PageLoader() {
   return (
     <>
       <style>{`
-        /* Crisp, razor-thin specular streak traveling the infinity path */
-        @keyframes infinity-light-loop {
-          0% {
-            stroke-dashoffset: 100;
-          }
-          100% {
-            stroke-dashoffset: 0;
-          }
-        }
-
-        /* Subtle specular shimmer along the bars */
-        @keyframes seg-1-gleam {
-          0%, 100% { opacity: 0.9; }
-          6%, 18% { opacity: 1; filter: brightness(1.7); }
-          28% { opacity: 0.9; filter: brightness(1); }
-        }
-
-        @keyframes seg-2-gleam {
-          0%, 100% { opacity: 0.9; }
-          28%, 44% { opacity: 1; filter: brightness(1.7); }
-          54% { opacity: 0.9; filter: brightness(1); }
-        }
-
-        @keyframes seg-3-gleam {
-          0%, 100% { opacity: 0.9; }
-          54%, 70% { opacity: 1; filter: brightness(1.7); }
-          78% { opacity: 0.9; filter: brightness(1); }
-        }
-
-        @keyframes seg-4-gleam {
-          0%, 100% { opacity: 0.92; filter: brightness(1); }
-          78%, 95% { opacity: 1; filter: brightness(1.35); }
-          5% { opacity: 0.92; filter: brightness(1); }
-        }
-
         .kinetic-loader-root {
           position: fixed;
           inset: 0;
@@ -97,52 +54,36 @@ export function PageLoader() {
           align-items: center;
           justify-content: center;
           overflow: hidden;
-          transition: opacity 0.45s cubic-bezier(0.8, 0, 0.2, 1);
+          transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .kinetic-loader-root.fading {
           opacity: 0;
           pointer-events: none;
         }
 
-        /* Spatial camera dolly zoom container */
         .kinetic-hero-title {
           position: relative;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          transform-origin: center center;
-          transition: transform 0.7s cubic-bezier(0.7, 0, 0.1, 1), opacity 0.5s ease;
           user-select: none;
+          transition: opacity 0.5s ease;
         }
 
-        .kinetic-hero-title.zooming {
-          transform: scale(7.5);
-          opacity: 0;
+        /* Crisp Red Infinity Streak Animation */
+        .red-infinity-streak {
+          stroke-dasharray: 24 76;
+          animation: red-infinity-loop 1.6s linear infinite;
         }
 
-        /* Crisp N Segments */
-        .n-seg-1 {
-          fill: #0F0F11;
-          animation: seg-1-gleam 2s linear infinite;
-        }
-        .n-seg-2 {
-          fill: #0F0F11;
-          animation: seg-2-gleam 2s linear infinite;
-        }
-        .n-seg-3 {
-          fill: #0F0F11;
-          animation: seg-3-gleam 2s linear infinite;
-        }
-        .n-seg-4 {
-          fill: #D01919;
-          animation: seg-4-gleam 2s linear infinite;
-        }
-
-        /* Ultra-crisp, minimal specular infinity light tracer (NO BLUR, NO GLOW BLOOM) */
-        .infinity-streak {
-          stroke-dasharray: 22 78;
-          animation: infinity-light-loop 2s linear infinite;
+        @keyframes red-infinity-loop {
+          0% {
+            stroke-dashoffset: 100;
+          }
+          100% {
+            stroke-dashoffset: 0;
+          }
         }
 
         /* Precision corner telemetry */
@@ -165,7 +106,7 @@ export function PageLoader() {
 
       <div className={`kinetic-loader-root loader-grid-bg ${isFading ? " fading" : ""}`}>
         {/* Center Official ISOFINITI Logo SVG (Exact brand geometry and spacing) */}
-        <div className={`kinetic-hero-title${isZooming ? " zooming" : ""}`}>
+        <div className="kinetic-hero-title">
           <div className="relative inline-block p-4">
             <svg
               viewBox="0 0 151 21"
@@ -206,44 +147,45 @@ export function PageLoader() {
                 <path d="M0 19.8515V0H3.83279V19.8515H0Z" fill="#0F0F11" />
               </g>
 
-              {/* 6. N (Clean Geometric Infinity Flow) */}
+              {/* 6. N (Clean Geometric Black Infinity Structure with Full-Width Red Flow) */}
               <g transform="translate(88.13, 0.398)">
-                {/* BASE PATH 1: Left Pillar */}
-                <path
-                  d="M0 0 H3.70452 V19.3705 H0 Z"
-                  className="n-seg-1"
-                />
+                <defs>
+                  <clipPath id="n-bar-clip">
+                    {/* BASE PATH 1: Left Pillar */}
+                    <path d="M0 0 H3.70452 V19.3705 H0 Z" />
 
-                {/* BASE PATH 2: Black Diagonal Bar */}
-                <path
-                  d="M3.70452 0 L16.8715 13.7745 V19.3705 L3.70452 5.59597 Z"
-                  className="n-seg-2"
-                />
+                    {/* BASE PATH 2: Black Diagonal Bar */}
+                    <path d="M3.70452 0 L16.8715 13.7745 V19.3705 L3.70452 5.59597 Z" />
 
-                {/* BASE PATH 3: Right Pillar */}
-                <path
-                  d="M16.8715 0 H20.5745 V19.3705 H16.8715 Z"
-                  className="n-seg-3"
-                />
+                    {/* BASE PATH 3: Right Pillar */}
+                    <path d="M16.8715 0 H20.5745 V19.3705 H16.8715 Z" />
 
-                {/* BASE PATH 4: Red Cross Diagonal Bar (Pure Solid Red) */}
-                <path
-                  d="M3.70301 19.3719H0V17.6497L16.8715 0H20.5745V1.72218L3.70301 19.3719Z"
-                  className="n-seg-4"
-                />
+                    {/* BASE PATH 4: Cross Diagonal Bar */}
+                    <path d="M3.70301 19.3719H0V17.6497L16.8715 0H20.5745V1.72218L3.70301 19.3719Z" />
+                  </clipPath>
+                </defs>
 
-                {/* CRISP SPECULAR LIGHT STREAK ALONG INFINITY PATH (NO BLUR, NO HALO) */}
-                <path
-                  d="M 1.85 19.37 L 1.85 0 L 18.72 19.37 L 18.72 0 L 1.85 19.37 Z"
-                  fill="none"
-                  stroke="#ffffff"
-                  strokeWidth="1"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  pathLength="100"
-                  className="infinity-streak"
-                  opacity="0.7"
-                />
+                {/* SOLID BLACK BASE STRUCTURE */}
+                <g fill="#0F0F11">
+                  <path d="M0 0 H3.70452 V19.3705 H0 Z" />
+                  <path d="M3.70452 0 L16.8715 13.7745 V19.3705 L3.70452 5.59597 Z" />
+                  <path d="M16.8715 0 H20.5745 V19.3705 H16.8715 Z" />
+                  <path d="M3.70301 19.3719H0V17.6497L16.8715 0H20.5745V1.72218L3.70301 19.3719Z" />
+                </g>
+
+                {/* RED FLOW PULSE THAT FULLY FILLS THE BARS WITHOUT LEAVING BLACK EDGES */}
+                <g clipPath="url(#n-bar-clip)">
+                  <path
+                    d="M 1.85 19.37 L 1.85 0 L 18.72 19.37 L 18.72 0 L 1.85 19.37 Z"
+                    fill="none"
+                    stroke="#D01919"
+                    strokeWidth="6.5"
+                    strokeLinecap="square"
+                    strokeLinejoin="miter"
+                    pathLength="100"
+                    className="red-infinity-streak"
+                  />
+                </g>
               </g>
 
               {/* 7. I */}

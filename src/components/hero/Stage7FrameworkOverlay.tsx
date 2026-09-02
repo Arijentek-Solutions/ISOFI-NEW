@@ -248,7 +248,7 @@ export const Stage7FrameworkOverlay = forwardRef<
                 } ${
                   isRevealed
                     ? "opacity-100 translate-y-0 scale-100 pointer-events-auto filter-none"
-                    : "opacity-0 translate-y-3 scale-95 pointer-events-none blur-[4px]"
+                    : "opacity-0 translate-y-3 scale-95 pointer-events-none"
                 }`}
               >
                 <h3 className="font-['Funnel_Display',sans-serif] font-bold text-[17px] xs:text-[20px] text-white tracking-tight leading-snug whitespace-nowrap">
@@ -346,7 +346,7 @@ export const Stage7FrameworkOverlay = forwardRef<
                 } ${
                   isActive
                     ? "opacity-100 pointer-events-auto filter-none"
-                    : "opacity-0 pointer-events-none blur-[5px]"
+                    : "opacity-0 pointer-events-none"
                 }`}
                 style={{
                   transform,

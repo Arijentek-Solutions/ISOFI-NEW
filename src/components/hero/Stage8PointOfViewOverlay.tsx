@@ -73,9 +73,7 @@ export const Stage8PointOfViewOverlay = forwardRef<
         )}deg) scale(${scale.toFixed(3)})`;
         cardEl.style.opacity = opacity.toFixed(3);
         cardEl.style.zIndex = String(zIndex);
-        cardEl.style.filter = `brightness(${brightness.toFixed(
-          2
-        )}) blur(${blurPx}px)`;
+        cardEl.style.filter = "none";
       });
 
       animId = requestAnimationFrame(renderLoop);

@@ -31,7 +31,7 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
   };
 
   return (
-    <div className="relative isolate min-h-screen lg:h-screen w-full overflow-hidden bg-black text-white selection:bg-[#D01919] selection:text-white flex flex-col justify-between pt-24 sm:pt-28 lg:pt-20 select-none">
+    <div className="relative isolate min-h-screen w-full bg-black text-white selection:bg-[#D01919] selection:text-white flex flex-col justify-between pt-12 sm:pt-16 lg:pt-10 xl:pt-12 pb-3 select-none">
       {/* 1. Dynamic Animated Silk Background (Very Subtle Ambient Background ~20% Opacity) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-20">
         <SilkBackgroundAnimation colorScheme="dark" showText={false} speed={1.1} />
@@ -41,37 +41,37 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
       </div>
 
       {/* 2. Main Split Stage Content */}
-      <main className="relative z-20 w-full max-w-[1920px] mx-auto px-5 sm:px-8 md:px-14 lg:px-[82px] flex-1 grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-8 pointer-events-none py-2 sm:py-4 lg:py-0">
+      <main className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-8 md:px-12 lg:px-[82px] flex-1 grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-6 pointer-events-none py-2 sm:py-3 lg:py-1">
         
         {/* LEFT COLUMN: Typography & Interactive Submit Form (~55% width) - Always Visible */}
         <div className="lg:col-span-6 xl:col-span-7 flex flex-col justify-center pointer-events-auto z-20 max-w-[760px] opacity-100 my-auto">
           {/* Main Headline */}
-          <h1 className="font-['Funnel_Display',sans-serif] font-bold text-white tracking-[-0.02em] text-[clamp(28px,4.5vw,74px)] leading-[1.01] uppercase">
+          <h1 className="font-['Funnel_Display',sans-serif] font-bold text-white tracking-[-0.02em] text-[clamp(24px,3.6vw,62px)] leading-[1.01] uppercase">
             WHAT ARE YOU <br />
             BUILDING NEXT <span className="text-[#D01919]">?</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="font-[family-name:var(--font-onest)] font-light text-zinc-300/90 text-xs sm:text-sm lg:text-[18px] xl:text-[20px] leading-relaxed mt-3 sm:mt-4 max-w-[600px]">
+          <p className="font-[family-name:var(--font-onest)] font-light text-zinc-300/90 text-xs sm:text-sm lg:text-[15px] xl:text-[17px] leading-relaxed mt-2 sm:mt-3 max-w-[560px]">
             {subheadline}
           </p>
 
           {/* Glassmorphic Input & Action Button */}
-          <form onSubmit={handleSubmit} className="mt-5 sm:mt-7 flex flex-col gap-3 sm:gap-4 max-w-[600px]">
+          <form onSubmit={handleSubmit} className="mt-3 sm:mt-4 flex flex-col gap-2.5 sm:gap-3 max-w-[560px]">
             <div className="relative w-full rounded-xl border border-white/15 bg-black/40 backdrop-blur-xl transition-all duration-300 focus-within:border-[#D01919]/70 focus-within:shadow-[0_0_30px_rgba(208,25,25,0.15)]">
               <textarea
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Type your project vision or message..."
                 rows={2}
-                className="w-full resize-none bg-transparent p-3 sm:p-4 text-xs sm:text-sm md:text-base text-white placeholder-zinc-500 focus:outline-none"
+                className="w-full resize-none bg-transparent p-2.5 sm:p-3.5 text-xs sm:text-sm md:text-base text-white placeholder-zinc-500 focus:outline-none"
               />
             </div>
 
             <div>
               <button
                 type="submit"
-                className="cursor-pointer rounded-md bg-[#D01919] px-6 sm:px-10 py-2.5 sm:py-3 font-[family-name:var(--font-onest)] text-xs sm:text-sm md:text-base font-bold uppercase tracking-wider text-white shadow-[0_0_25px_rgba(208,25,25,0.35)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#b01414] hover:shadow-[0_0_35px_rgba(208,25,25,0.55)] active:scale-95"
+                className="cursor-pointer rounded-md bg-[#D01919] px-6 sm:px-8 py-2 sm:py-2.5 font-[family-name:var(--font-onest)] text-xs sm:text-sm md:text-base font-bold uppercase tracking-wider text-white shadow-[0_0_25px_rgba(208,25,25,0.35)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#b01414] hover:shadow-[0_0_35px_rgba(208,25,25,0.55)] active:scale-95"
               >
                 SUBMIT
               </button>
@@ -80,9 +80,9 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
         </div>
 
         {/* RIGHT COLUMN: Interactive 3D ISOFINITI Infinity Particle System (~45% width) */}
-        <div className="lg:col-span-6 xl:col-span-5 h-[300px] xs:h-[360px] sm:h-[420px] md:h-[480px] lg:h-[540px] w-full relative flex items-center justify-center pointer-events-auto my-auto translate-y-6 sm:translate-y-8 lg:translate-y-10">
+        <div className="lg:col-span-6 xl:col-span-5 h-[180px] xs:h-[220px] sm:h-[260px] md:h-[300px] lg:h-[240px] xl:h-[320px] 2xl:h-[400px] w-full relative flex items-center justify-center pointer-events-auto my-auto">
           {/* Subtle Ambient Vignette Behind 3D Logo (Pure Monochrome) */}
-          <div className="absolute w-[240px] sm:w-[320px] lg:w-[380px] h-[240px] sm:h-[320px] lg:h-[380px] rounded-full bg-white/[0.03] blur-[70px] pointer-events-none" />
+          <div className="absolute w-[180px] sm:w-[240px] lg:w-[280px] h-[180px] sm:h-[240px] lg:h-[280px] rounded-full bg-white/[0.03] blur-[60px] pointer-events-none" />
 
           {/* 3D Three.js Woven Emblem Canvas with Bold Red Diagonal Prisms */}
           <div className="relative w-full h-full flex items-center justify-center">
@@ -91,43 +91,72 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
         </div>
       </main>
 
-      {/* 3. Bottom Footer Status Bar matching user's exact specification */}
-      <footer className="relative z-30 w-full max-w-[1920px] mx-auto px-6 sm:px-10 md:px-14 lg:px-[82px] pt-6 sm:pt-8 pb-6 sm:pb-8 flex flex-col pointer-events-auto">
-        {/* Menu & Legal Columns */}
-        <div className="grid grid-cols-2 gap-8 sm:gap-12 md:gap-20 w-full max-w-[480px]">
+      {/* 3. Bottom Responsive Footer Status Bar */}
+      <footer className="relative z-30 w-full max-w-[1920px] mx-auto px-4 sm:px-8 md:px-12 lg:px-[82px] pt-2 sm:pt-4 pb-3 flex flex-col pointer-events-auto mt-auto">
+        {/* Responsive Info Grid */}
+        <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 w-full">
           {/* Menu Column */}
-          <div className="flex flex-col gap-2.5 sm:gap-3">
-            <span className="font-['Inter',sans-serif] text-[11px] sm:text-[12px] font-medium tracking-[1.2px] uppercase text-white/60">
+          <div className="flex flex-col gap-1.5">
+            <span className="font-['Inter',sans-serif] text-[10px] sm:text-[11px] font-semibold tracking-[1.4px] uppercase text-white/60">
               MENU
             </span>
-            <div className="flex flex-col gap-2 font-['Inter',sans-serif] text-[13.5px] sm:text-[15px] font-normal text-white/90">
-              <Link href="/" className="hover:text-white transition-colors">Home</Link>
-              <Link href="/services" className="hover:text-white transition-colors">Services</Link>
-              <Link href="/case-studies" className="hover:text-white transition-colors">Case Studies</Link>
-              <Link href="/about" className="hover:text-white transition-colors">About</Link>
-              <Link href="/contact" className="hover:text-white transition-colors">Contacts</Link>
+            <div className="flex flex-col gap-1 font-['Inter',sans-serif] text-[12px] sm:text-[13px] font-normal text-white/90">
+              <Link href="/" className="hover:text-[#D01919] transition-colors">Home</Link>
+              <Link href="/services" className="hover:text-[#D01919] transition-colors">Services</Link>
+              <Link href="/case-studies" className="hover:text-[#D01919] transition-colors">Case Studies</Link>
+              <Link href="/about" className="hover:text-[#D01919] transition-colors">About</Link>
+              <Link href="/contact" className="hover:text-[#D01919] transition-colors">Contacts</Link>
             </div>
           </div>
 
           {/* Legal Column */}
-          <div className="flex flex-col gap-2.5 sm:gap-3">
-            <span className="font-['Inter',sans-serif] text-[11px] sm:text-[12px] font-medium tracking-[1.2px] uppercase text-white/60">
+          <div className="flex flex-col gap-1.5">
+            <span className="font-['Inter',sans-serif] text-[10px] sm:text-[11px] font-semibold tracking-[1.4px] uppercase text-white/60">
               LEGAL
             </span>
-            <div className="flex flex-col gap-2 font-['Inter',sans-serif] text-[13.5px] sm:text-[15px] font-normal text-white/90">
-              <a href="#privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#terms" className="hover:text-white transition-colors">Terms of Service</a>
+            <div className="flex flex-col gap-1 font-['Inter',sans-serif] text-[12px] sm:text-[13px] font-normal text-white/90">
+              <a href="#privacy" className="hover:text-[#D01919] transition-colors">Privacy Policy</a>
+              <a href="#terms" className="hover:text-[#D01919] transition-colors">Terms of Service</a>
+            </div>
+          </div>
+
+          {/* Direct Channels Column */}
+          <div className="flex flex-col gap-1.5">
+            <span className="font-['Inter',sans-serif] text-[10px] sm:text-[11px] font-semibold tracking-[1.4px] uppercase text-white/60">
+              CHANNELS
+            </span>
+            <div className="flex flex-col gap-1 font-['Inter',sans-serif] text-[12px] sm:text-[13px] font-normal text-white/90">
+              <a href="mailto:hello@isofiniti.com" className="hover:text-[#D01919] transition-colors break-all">hello@isofiniti.com</a>
+              <span className="text-white/60 text-[11px]">Global Remote / HQ</span>
+            </div>
+          </div>
+
+          {/* Connect Column */}
+          <div className="flex flex-col gap-1.5 col-span-2 xs:col-span-1">
+            <span className="font-['Inter',sans-serif] text-[10px] sm:text-[11px] font-semibold tracking-[1.4px] uppercase text-white/60">
+              CONNECT
+            </span>
+            <div className="flex items-center gap-2 font-['Inter',sans-serif] text-[12px] sm:text-[13px] font-normal text-white/90">
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-[#D01919] transition-colors">LinkedIn</a>
+              <span className="text-white/30">•</span>
+              <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-[#D01919] transition-colors">Twitter</a>
+              <span className="text-white/30">•</span>
+              <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-[#D01919] transition-colors">GitHub</a>
             </div>
           </div>
         </div>
 
         {/* Glowing Red Accent Divider Line */}
-        <div className="w-full h-[1px] bg-gradient-to-r from-[#D01919]/40 via-[#D01919] to-[#D01919]/40 shadow-[0_0_16px_rgba(208,25,25,0.9)] opacity-85 mt-6 sm:mt-8 mb-4 sm:mb-5" />
+        <div className="w-full h-[1px] bg-gradient-to-r from-[#D01919]/40 via-[#D01919] to-[#D01919]/40 shadow-[0_0_16px_rgba(208,25,25,0.9)] opacity-85 my-2.5 sm:my-3.5" />
 
-        {/* Bottom Row: ISOFINITI Text Logo (Left) + FullIcon Bracket Emblem (Right) */}
-        <div className="flex items-center justify-between w-full pt-1">
+        {/* Bottom Row: ISOFINITI Text Logo (Left) + Copyright Notice (Center) + FullIcon Emblem (Right) */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5 w-full pt-0.5">
           <div className="flex items-center">
-            <Logo fill="#FFFFFF" accentColor="#D01919" width={138} height={18} className="w-[124px] sm:w-[140px] h-auto" />
+            <Logo fill="#FFFFFF" accentColor="#D01919" width={138} height={18} className="w-[105px] sm:w-[125px] h-auto" />
+          </div>
+
+          <div className="text-[10.5px] sm:text-[11.5px] text-white/50 font-['Inter',sans-serif]">
+            © {new Date().getFullYear()} ISOFINITI. All rights reserved.
           </div>
 
           <div className="flex items-center">
@@ -136,7 +165,7 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
               alt="ISOFINITI Emblem"
               width={34}
               height={34}
-              className="w-7 sm:w-8 h-7 sm:h-8 object-contain"
+              className="w-5.5 sm:w-6.5 h-5.5 sm:h-6.5 object-contain"
             />
           </div>
         </div>
