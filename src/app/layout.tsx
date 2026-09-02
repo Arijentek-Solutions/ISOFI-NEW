@@ -3,6 +3,7 @@ import { Chakra_Petch, Onest, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/common/SmoothScroll";
 import { AOSInit } from "@/components/common/AOSInit";
+import { PageLoader } from "@/components/common/PageLoader";
 
 const chakraPetch = Chakra_Petch({
   variable: "--font-chakra",
@@ -45,7 +46,9 @@ export default function RootLayout({
         <SmoothScroll />
         <AOSInit />
         {children}
+        <PageLoader />
       </body>
     </html>
   );
 }
+

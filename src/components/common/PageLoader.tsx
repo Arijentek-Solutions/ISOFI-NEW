@@ -1,0 +1,330 @@
+"use client";
+
+import { useEffect, useState, useRef } from "react";
+
+export function PageLoader() {
+  const [visible, setVisible] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [phase, setPhase] = useState("INITIALIZING");
+  const [isZooming, setIsZooming] = useState(false);
+  const [isFading, setIsFading] = useState(false);
+  const animFrameRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const startTime = performance.now();
+    const duration = 2400; // 2.4s smooth luxury progression
+
+    const update = (now: number) => {
+      const elapsed = now - startTime;
+      const raw = Math.min(1, elapsed / duration);
+      // Smooth cubic-out easing
+      const eased = 1 - Math.pow(1 - raw, 2.4);
+      const val = Math.round(eased * 100);
+      setProgress(val);
+
+      if (val < 25) {
+        setPhase("INITIALIZING MATRIX");
+      } else if (val < 60) {
+        setPhase("CALIBRATING");
+      } else if (val < 90) {
+        setPhase("SPATIAL ACCELERATION");
+      } else {
+        setPhase("INTERFACE READY");
+      }
+
+      if (raw < 1) {
+        animFrameRef.current = requestAnimationFrame(update);
+      } else {
+        // Step 1: Spatial camera zoom-through
+        setTimeout(() => {
+          setIsZooming(true);
+        }, 200);
+
+        // Step 2: Backdrop fade
+        setTimeout(() => {
+          setIsFading(true);
+        }, 500);
+
+        // Step 3: Complete & Unmount
+        setTimeout(() => {
+          setVisible(false);
+          if (typeof window !== "undefined") {
+            (window as unknown as { pageLoaderDone: boolean }).pageLoaderDone = true;
+            window.dispatchEvent(new CustomEvent("pageLoaderDone"));
+          }
+        }, 900);
+      }
+    };
+
+    animFrameRef.current = requestAnimationFrame(update);
+
+    return () => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    };
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <>
+      <style>{`
+        /* Crisp, razor-thin specular streak traveling the infinity path */
+        @keyframes infinity-light-loop {
+          0% {
+            stroke-dashoffset: 100;
+          }
+          100% {
+            stroke-dashoffset: 0;
+          }
+        }
+
+        /* Subtle specular shimmer along the bars */
+        @keyframes seg-1-gleam {
+          0%, 100% { opacity: 0.9; }
+          6%, 18% { opacity: 1; filter: brightness(1.7); }
+          28% { opacity: 0.9; filter: brightness(1); }
+        }
+
+        @keyframes seg-2-gleam {
+          0%, 100% { opacity: 0.9; }
+          28%, 44% { opacity: 1; filter: brightness(1.7); }
+          54% { opacity: 0.9; filter: brightness(1); }
+        }
+
+        @keyframes seg-3-gleam {
+          0%, 100% { opacity: 0.9; }
+          54%, 70% { opacity: 1; filter: brightness(1.7); }
+          78% { opacity: 0.9; filter: brightness(1); }
+        }
+
+        @keyframes seg-4-gleam {
+          0%, 100% { opacity: 0.92; filter: brightness(1); }
+          78%, 95% { opacity: 1; filter: brightness(1.35); }
+          5% { opacity: 0.92; filter: brightness(1); }
+        }
+
+        .kinetic-loader-root {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          background: #efefef;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          transition: opacity 0.45s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+        .kinetic-loader-root.fading {
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        /* Spatial camera dolly zoom container */
+        .kinetic-hero-title {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          transform-origin: center center;
+          transition: transform 0.7s cubic-bezier(0.7, 0, 0.1, 1), opacity 0.5s ease;
+          user-select: none;
+        }
+
+        .kinetic-hero-title.zooming {
+          transform: scale(7.5);
+          opacity: 0;
+        }
+
+        /* Crisp N Segments */
+        .n-seg-1 {
+          fill: #0F0F11;
+          animation: seg-1-gleam 2s linear infinite;
+        }
+        .n-seg-2 {
+          fill: #0F0F11;
+          animation: seg-2-gleam 2s linear infinite;
+        }
+        .n-seg-3 {
+          fill: #0F0F11;
+          animation: seg-3-gleam 2s linear infinite;
+        }
+        .n-seg-4 {
+          fill: #D01919;
+          animation: seg-4-gleam 2s linear infinite;
+        }
+
+        /* Ultra-crisp, minimal specular infinity light tracer (NO BLUR, NO GLOW BLOOM) */
+        .infinity-streak {
+          stroke-dasharray: 22 78;
+          animation: infinity-light-loop 2s linear infinite;
+        }
+
+        /* Precision corner telemetry */
+        .telemetry-tag {
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 10px;
+          color: rgba(24, 24, 27, 0.45);
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+        }
+
+        /* Clean subtle grid texture */
+        .loader-grid-bg {
+          background-image: 
+            linear-gradient(to right, rgba(0,0,0,0.02) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0,0,0,0.02) 1px, transparent 1px);
+          background-size: 36px 36px;
+        }
+      `}</style>
+
+      <div className={`kinetic-loader-root loader-grid-bg ${isFading ? " fading" : ""}`}>
+        {/* Precision HUD Corner Brackets */}
+        <div className="absolute top-6 left-6 flex items-center gap-3 telemetry-tag">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#D01919] animate-ping" />
+          <span>ISOFINITI // SPATIAL ARCHITECTURE</span>
+        </div>
+
+        <div className="absolute top-6 right-6 telemetry-tag hidden sm:flex items-center gap-2">
+          <span className="text-zinc-400">[</span>
+          <span className="text-zinc-700 font-semibold">SYS.LAT 44.79° N // LNG 106.95° W</span>
+          <span className="text-zinc-400">]</span>
+        </div>
+
+        <div className="absolute bottom-6 left-6 telemetry-tag hidden sm:flex items-center gap-2">
+          <span className="w-2 h-2 border-l border-b border-zinc-400 inline-block" />
+          <span>STATUS: ONLINE</span>
+        </div>
+
+        {/* Center Official ISOFINITI Logo SVG (Exact brand geometry and spacing) */}
+        <div className={`kinetic-hero-title${isZooming ? " zooming" : ""}`}>
+          <div className="relative inline-block p-4">
+            <svg
+              viewBox="0 0 151 21"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-[280px] sm:w-[460px] md:w-[580px] h-auto drop-shadow-[0_4px_16px_rgba(0,0,0,0.04)] overflow-visible"
+              aria-label="ISOFINITI"
+            >
+              {/* 1. I */}
+              <path d="M0 20.0765V0.225H3.83275V20.0765H0Z" fill="#0F0F11" />
+
+              {/* 2. S */}
+              <g transform="translate(10.71, 0)">
+                <path
+                  d="M7.96034 20.3002C6.63808 20.3002 5.40517 20.0852 4.26159 19.6552C3.13588 19.2253 2.18887 18.543 1.42053 17.6085C0.670057 16.6738 0.196541 15.4681 0 13.9914H3.91315C4.07397 14.6269 4.3688 15.141 4.79764 15.5335C5.22647 15.9074 5.73573 16.1784 6.32532 16.3467C6.93289 16.5149 7.56715 16.599 8.22828 16.599C8.72874 16.599 9.21997 16.5336 9.70247 16.4027C10.185 16.2719 10.578 16.0476 10.8818 15.7298C11.2033 15.412 11.3642 14.9821 11.3642 14.44C11.3642 14.0288 11.2749 13.6923 11.0962 13.4306C10.9354 13.1689 10.6942 12.9633 10.3725 12.8138C10.0688 12.6455 9.69357 12.496 9.24683 12.3651C8.87161 12.253 8.47842 12.1595 8.06761 12.0847C7.67443 12.01 7.28125 11.9165 6.88823 11.8044C6.51301 11.6922 6.14669 11.5614 5.78933 11.4118C5.11033 11.2249 4.45813 11.0006 3.83275 10.7389C3.20735 10.4585 2.65343 10.1127 2.171 9.70143C1.68856 9.27151 1.30439 8.73878 1.01848 8.10324C0.750473 7.46767 0.616452 6.70128 0.616452 5.80403C0.616452 4.83202 0.768336 4.00955 1.07209 3.33662C1.39372 2.6637 1.81363 2.11226 2.3318 1.68233C2.86786 1.23371 3.45751 0.887897 4.10078 0.644892C4.7619 0.40189 5.42303 0.233657 6.08424 0.140194C6.74536 0.0467311 7.37073 0 7.96034 0C9.19327 0 10.3011 0.22431 11.2838 0.672931C12.2666 1.12155 13.0707 1.79448 13.6961 2.69173C14.3214 3.58898 14.6789 4.71987 14.7682 6.08443H11.0427C10.9712 5.52364 10.7746 5.06568 10.4529 4.71052C10.1314 4.35537 9.72043 4.09366 9.21997 3.92545C8.73764 3.75721 8.19269 3.67309 7.58512 3.67309C7.19193 3.67309 6.80782 3.71048 6.4326 3.78524C6.05736 3.86001 5.71785 3.98152 5.4141 4.14974C5.12821 4.29929 4.89591 4.50491 4.71723 4.7666C4.55641 5.0283 4.47601 5.34607 4.47601 5.71993C4.47601 6.09377 4.57429 6.42089 4.77083 6.70128C4.96739 6.96299 5.25328 7.19664 5.62852 7.40225C6.02162 7.58919 6.47725 7.76677 6.99551 7.935C7.53156 8.12192 8.09431 8.27145 8.68392 8.38361C9.27369 8.49576 9.83644 8.64531 10.3725 8.83223C11.0516 9.01917 11.6858 9.24347 12.2754 9.50517C12.8652 9.74817 13.3833 10.0659 13.8301 10.4585C14.2768 10.8323 14.6251 11.3184 14.8753 11.9165C15.1254 12.496 15.2505 13.2156 15.2505 14.0755C15.2505 15.2158 15.045 16.1878 14.6342 16.9915C14.241 17.7766 13.6961 18.4121 12.9992 18.8981C12.3203 19.3842 11.543 19.7394 10.6673 19.9636C9.79178 20.1879 8.8894 20.3002 7.96034 20.3002Z"
+                  fill="#0F0F11"
+                />
+              </g>
+
+              {/* 3. O */}
+              <g transform="translate(32.12, 0)">
+                <path
+                  d="M9.35414 20.3002C7.40652 20.3002 5.72684 19.8702 4.31528 19.0103C2.92151 18.1505 1.84941 16.9635 1.09897 15.4494C0.366322 13.9166 0 12.1595 0 10.1781C0 8.15931 0.375386 6.38352 1.12583 4.85073C1.89406 3.31793 2.98413 2.13095 4.3957 1.28979C5.80726 0.429929 7.48694 0 9.43456 0C11.3644 0 13.0261 0.420584 14.4199 1.26175C15.8135 2.10292 16.8856 3.28054 17.636 4.79465C18.4044 6.30874 18.7885 8.07519 18.7885 10.094C18.7885 12.0754 18.4044 13.8418 17.636 15.3933C16.8856 16.9261 15.8046 18.1318 14.393 19.0103C12.9992 19.8702 11.3197 20.3002 9.35414 20.3002ZM9.40769 16.5429C10.6942 16.5429 11.7396 16.2345 12.5436 15.6176C13.3478 15.0008 13.9285 14.2063 14.2857 13.2343C14.6609 12.2623 14.8486 11.2436 14.8486 10.1781C14.8486 9.39301 14.7414 8.61728 14.527 7.85088C14.3304 7.08449 14.0178 6.39286 13.5888 5.776C13.1601 5.15915 12.5971 4.67315 11.9004 4.31798C11.2035 3.94413 10.3636 3.75721 9.381 3.75721C8.1123 3.75721 7.07596 4.06563 6.2718 4.68249C5.4678 5.28065 4.86913 6.06574 4.47611 7.03775C4.10089 8.00977 3.9132 9.0472 3.9132 10.1501C3.9132 11.2529 4.10089 12.2904 4.47611 13.2624C4.86913 14.2344 5.4678 15.0288 6.2718 15.6457C7.09376 16.2438 8.13916 16.5429 9.40769 16.5429Z"
+                  fill="#0F0F11"
+                />
+              </g>
+
+              {/* 4. F */}
+              <g transform="translate(57.56, 0.225)">
+                <path
+                  d="M0 19.8515V0H13.5084V3.72916H3.83262V8.86028H12.0074V12.5614H3.83262V19.8515H0Z"
+                  fill="#0F0F11"
+                />
+              </g>
+
+              {/* 5. I */}
+              <g transform="translate(77.40, 0.225)">
+                <path d="M0 19.8515V0H3.83279V19.8515H0Z" fill="#0F0F11" />
+              </g>
+
+              {/* 6. N (Clean Geometric Infinity Flow) */}
+              <g transform="translate(88.13, 0.398)">
+                {/* BASE PATH 1: Left Pillar */}
+                <path
+                  d="M0 0 H3.70452 V19.3705 H0 Z"
+                  className="n-seg-1"
+                />
+
+                {/* BASE PATH 2: Black Diagonal Bar */}
+                <path
+                  d="M3.70452 0 L16.8715 13.7745 V19.3705 L3.70452 5.59597 Z"
+                  className="n-seg-2"
+                />
+
+                {/* BASE PATH 3: Right Pillar */}
+                <path
+                  d="M16.8715 0 H20.5745 V19.3705 H16.8715 Z"
+                  className="n-seg-3"
+                />
+
+                {/* BASE PATH 4: Red Cross Diagonal Bar (Pure Solid Red) */}
+                <path
+                  d="M3.70301 19.3719H0V17.6497L16.8715 0H20.5745V1.72218L3.70301 19.3719Z"
+                  className="n-seg-4"
+                />
+
+                {/* CRISP SPECULAR LIGHT STREAK ALONG INFINITY PATH (NO BLUR, NO HALO) */}
+                <path
+                  d="M 1.85 19.37 L 1.85 0 L 18.72 19.37 L 18.72 0 L 1.85 19.37 Z"
+                  fill="none"
+                  stroke="#ffffff"
+                  strokeWidth="1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  pathLength="100"
+                  className="infinity-streak"
+                  opacity="0.7"
+                />
+              </g>
+
+              {/* 7. I */}
+              <g transform="translate(115.64, 0.225)">
+                <path d="M0 19.8515V0H3.83279V19.8515H0Z" fill="#0F0F11" />
+              </g>
+
+              {/* 8. T */}
+              <g transform="translate(125.38, 0.225)">
+                <path
+                  d="M5.78929 19.8515V3.72916H0V0H15.4649V3.72916H9.64878V19.8515H5.78929Z"
+                  fill="#0F0F11"
+                />
+              </g>
+
+              {/* 9. I */}
+              <g transform="translate(146.75, 0.225)">
+                <path d="M0 19.8515V0H3.83261V19.8515H0Z" fill="#0F0F11" />
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        {/* Bottom Center Progress & Dynamic Telemetry Readout */}
+        <div
+          className={`absolute bottom-8 right-8 sm:bottom-12 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 flex flex-col items-center gap-2.5 transition-opacity duration-300 ${
+            isZooming ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          {/* Dynamic Phase Readout & Numeric Counter */}
+          <div className="flex items-center justify-between w-64 px-1 font-mono">
+            <span className="text-[11px] text-zinc-500 font-medium tracking-widest uppercase">
+              {phase}
+            </span>
+            <span className="text-sm font-bold text-[#D01919] tabular-nums tracking-wider">
+              {progress.toString().padStart(3, "0")}%
+            </span>
+          </div>
+
+          {/* Micro Precision Progress Track */}
+          <div className="w-64 h-[2px] bg-zinc-300/80 relative overflow-hidden rounded-full">
+            <div
+              className="h-full bg-gradient-to-r from-[#D01919] via-[#ff3b3b] to-[#D01919] transition-all duration-75 ease-out rounded-full"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

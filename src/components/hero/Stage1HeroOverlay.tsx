@@ -59,7 +59,7 @@ export const Stage1HeroOverlay = forwardRef<HTMLDivElement>((props, ref) => {
         </div>
 
         {/* Bottom Right Description Copy */}
-        <div className="absolute bottom-[clamp(24px,8vh,110px)] right-[clamp(24px,4.3vw,82px)] w-[clamp(240px,22.5vw,430px)] text-left">
+        <div className="absolute bottom-[clamp(24px,8vh,110px)] right-[clamp(24px,4.3vw,82px)] w-[clamp(240px,22.5vw,430px)] text-left translate-x-[2cm]">
           <p className="font-[family-name:var(--font-onest)] font-light text-[rgba(0,0,0,0.5)] text-[clamp(12px,1.15vw,22px)] leading-[clamp(18px,1.75vw,33.56px)]">
             Intelligent Systems. Advanced digital partner. Combining brutalist
             design, full-stack architecture, and deep AI integration. Scroll

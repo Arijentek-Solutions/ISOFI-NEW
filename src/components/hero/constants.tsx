@@ -8,8 +8,8 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-export const START_FRAME = 2;
-export const TOTAL_FRAMES = 115;
+export const START_FRAME = 1;
+export const TOTAL_FRAMES = 120;
 
 // Duration in ms for smooth cinematic travel (snappy & responsive)
 export const SCROLL_TRANSITION_DURATION = 1100;
