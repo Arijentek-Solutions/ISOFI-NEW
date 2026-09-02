@@ -29,6 +29,9 @@ export function IdeaToIntelligentSystem() {
       {/* ========================================================================= */}
       <div
         data-node-id="1408:5441"
+        data-aos="fade-left"
+        data-aos-delay="200"
+        data-aos-duration="1000"
         className="absolute -right-24 sm:-right-16 md:-right-8 lg:-right-4 xl:right-2 top-[30px] sm:top-[50px] lg:top-[70px] pointer-events-none z-0 transition-transform duration-700 ease-out"
         style={{
           transform: `translate3d(${mousePos.x * 22}px, ${mousePos.y * 18}px, 0)`,
@@ -53,6 +56,9 @@ export function IdeaToIntelligentSystem() {
       {/* ========================================================================= */}
       <div
         data-node-id="1408:5443"
+        data-aos="fade-right"
+        data-aos-delay="300"
+        data-aos-duration="1000"
         className="absolute -left-28 sm:-left-20 md:-left-10 lg:-left-6 xl:left-0 top-[310px] sm:top-[360px] lg:top-[400px] pointer-events-none z-0 transition-transform duration-700 ease-out"
         style={{
           transform: `translate3d(${mousePos.x * -26}px, ${mousePos.y * -20}px, 0)`,
@@ -79,6 +85,8 @@ export function IdeaToIntelligentSystem() {
         {/* Balanced Headline Size */}
         <h2
           data-node-id="1408:5366"
+          data-aos="fade-up"
+          data-aos-duration="800"
           className="font-['Funnel_Display',sans-serif] font-extrabold text-[#000000] text-[clamp(32px,4.4vw,74px)] leading-[1.03] tracking-[-1.2px] sm:tracking-[-2px] lg:tracking-[-3px] text-center max-w-[860px] [word-break:break-word]"
         >
           From Idea To Intelligent System.
@@ -87,6 +95,9 @@ export function IdeaToIntelligentSystem() {
         {/* Balanced Paragraph Size */}
         <p
           data-node-id="1408:5373"
+          data-aos="fade-up"
+          data-aos-delay="200"
+          data-aos-duration="800"
           className="font-['Funnel_Display',sans-serif] font-normal text-[#000000]/85 text-[clamp(16px,1.7vw,27px)] leading-[1.4] sm:leading-[1.38] lg:leading-[1.35] tracking-[-0.4px] sm:tracking-[-0.6px] text-center max-w-[920px] [word-break:break-word]"
         >
           Whether you&apos;re creating something new, improving what already exists, or automating the way your business operates, we bring the right combination of design and technology to the problem.

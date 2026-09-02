@@ -11,6 +11,8 @@ export function ValueCreationThesis() {
       <div className="relative z-10 w-full max-w-[1180px] flex flex-col items-center justify-center">
         <h2
           data-node-id="1408:7070"
+          data-aos="fade-up"
+          data-aos-duration="850"
           className="font-['Funnel_Display',sans-serif] font-normal text-black text-[clamp(28px,4.5vw,72px)] leading-[1.08] tracking-[-1px] sm:tracking-[-1.8px] lg:tracking-[-2.15px] text-center max-w-[1240px] [word-break:break-word]"
         >
           It changes what we build, how we <br className="hidden sm:inline" />

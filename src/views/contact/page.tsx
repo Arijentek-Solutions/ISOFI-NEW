@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import AOS from 'aos';
 import { Navbar } from '@/components/common/Navbar';
 import { ConnectHero } from './hero';
 import { ContactMindSection } from './ContactMindSection';
@@ -9,6 +10,13 @@ import { GoodThingsSection } from './GoodThingsSection';
 import { WovenLightHero } from '@/components/ui/woven-light-hero';
 
 export function ContactPage() {
+  useEffect(() => {
+    AOS.refresh();
+    const timer = setTimeout(() => {
+      AOS.refresh();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <div className="relative w-full min-h-screen bg-[#efefef] text-black overflow-x-hidden">
       {/* 1. Global Dynamic Contrast Navigation Bar */}

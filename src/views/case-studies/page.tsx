@@ -1,15 +1,23 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import AOS from 'aos';
 import { Navbar } from '@/components/common/Navbar';
 import { CaseStudiesHero } from './hero';
 import { CaseStudiesList } from './CaseStudiesList';
-import { ServiceFAQSection } from '@/pages/service/ServiceFAQSection';
-import { AboutClientsSection } from '@/pages/about/AboutClientsSection';
-import { HaveAProblemSection } from '@/pages/service/HaveAProblemSection';
+import { ServiceFAQSection } from '@/views/service/ServiceFAQSection';
+import { AboutClientsSection } from '@/views/about/AboutClientsSection';
+import { HaveAProblemSection } from '@/views/service/HaveAProblemSection';
 import { WovenLightHero } from '@/components/ui/woven-light-hero';
 
 export function CaseStudiesPage() {
+  useEffect(() => {
+    AOS.refresh();
+    const timer = setTimeout(() => {
+      AOS.refresh();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <div className="relative w-full min-h-screen bg-[#efefef] text-black overflow-x-hidden">
       {/* 1. Global Navigation Bar */}

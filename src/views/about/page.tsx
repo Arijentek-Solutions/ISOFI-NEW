@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
+import AOS from 'aos';
 import { Navbar } from '@/components/common/Navbar';
 import AboutHero from './hero';
 import AboutWhoWeAre from './WhoWeAre';
@@ -9,12 +10,19 @@ import WhyIsofiExists from './WhyIsofiExists';
 import StartWithTheProblem from './StartWithTheProblem';
 import ValueCreationThesis from './ValueCreationThesis';
 import TeamShowcase from './TeamShowcase';
-import ServiceFAQSection from '@/pages/service/ServiceFAQSection';
-import AboutClientsSection from './AboutClientsSection';
-import HaveAProblemSection from '@/pages/service/HaveAProblemSection';
+import ServiceFAQSection from '@/views/service/ServiceFAQSection';
+import { AboutClientsSection } from './AboutClientsSection';
+import HaveAProblemSection from '@/views/service/HaveAProblemSection';
 import { WovenLightHero } from '@/components/ui/woven-light-hero';
 
 export default function AboutPage() {
+  useEffect(() => {
+    AOS.refresh();
+    const timer = setTimeout(() => {
+      AOS.refresh();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <>
       <Head>

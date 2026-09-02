@@ -25,6 +25,9 @@ export function ContactMindSection() {
     >
       {/* Top-Right Floating 3D Emblem with subtle blur */}
       <div
+        data-aos="fade-left"
+        data-aos-delay="200"
+        data-aos-duration="1000"
         className="absolute -right-10 sm:right-4 lg:right-12 xl:right-20 top-[6%] sm:top-[10%] pointer-events-none z-0 transition-transform duration-700 ease-out"
         style={{
           transform: `translate3d(${mousePos.x * 20}px, ${mousePos.y * 16}px, 0)`,
@@ -43,6 +46,9 @@ export function ContactMindSection() {
 
       {/* Bottom-Left Floating 3D Emblem with subtle blur */}
       <div
+        data-aos="fade-right"
+        data-aos-delay="300"
+        data-aos-duration="1000"
         className="absolute -left-12 sm:left-4 lg:left-12 xl:left-20 bottom-[6%] sm:bottom-[10%] pointer-events-none z-0 transition-transform duration-700 ease-out"
         style={{
           transform: `translate3d(${mousePos.x * -24}px, ${mousePos.y * -18}px, 0)`,
@@ -64,6 +70,8 @@ export function ContactMindSection() {
         {/* Main Headline */}
         <h2
           data-node-id="1408:15481"
+          data-aos="fade-up"
+          data-aos-duration="800"
           className="font-['Funnel_Display',sans-serif] font-extrabold text-black text-[clamp(34px,4.8vw,78px)] leading-[1.02] tracking-tight uppercase max-w-[1050px]"
         >
           TELL US WHAT&apos;S ON <br className="hidden sm:inline" />
@@ -73,6 +81,9 @@ export function ContactMindSection() {
         {/* Narrative Paragraph */}
         <div
           data-node-id="1408:15484"
+          data-aos="fade-up"
+          data-aos-delay="200"
+          data-aos-duration="800"
           className="font-[family-name:var(--font-onest)] font-normal text-black/70 text-[clamp(15px,1.65vw,25px)] leading-[1.4] max-w-[960px] mt-8 sm:mt-10 lg:mt-12 flex flex-col gap-1.5"
         >
           <p>You don&apos;t need to have everything figured out before reaching out.</p>

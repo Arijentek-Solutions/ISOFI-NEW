@@ -1,4 +1,4 @@
-import ServicePage from '@/pages/service/page';
+import ServicePage from '@/views/service/page';
 
 export const metadata = {
   title: "Services | ISOFINITI — Technology That Moves Business Forward",

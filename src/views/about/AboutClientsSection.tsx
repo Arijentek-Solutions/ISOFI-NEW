@@ -83,7 +83,11 @@ export function AboutClientsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-10 lg:gap-16 w-full">
           
           {/* Left Column: Headline & Subtitle */}
-          <div className="lg:col-span-6 xl:col-span-6 flex flex-col text-left">
+          <div 
+            className="lg:col-span-6 xl:col-span-6 flex flex-col text-left"
+            data-aos="fade-right"
+            data-aos-duration="850"
+          >
             <h2 className="font-['Funnel_Display',sans-serif] font-bold text-white text-[clamp(36px,4.8vw,78px)] leading-[1.03] tracking-tight">
               Inspired by the <br />
               needs of our clients.
@@ -94,7 +98,12 @@ export function AboutClientsSection() {
           </div>
 
           {/* Right Column: 6 Logos in a 3 Columns x 2 Rows Grid */}
-          <div className="lg:col-span-6 xl:col-span-6 w-full">
+          <div 
+            className="lg:col-span-6 xl:col-span-6 w-full"
+            data-aos="fade-left"
+            data-aos-duration="850"
+            data-aos-delay="150"
+          >
             <div className="grid grid-cols-3 gap-x-6 sm:gap-x-12 lg:gap-x-14 gap-y-8 sm:gap-y-12 items-center justify-items-center w-full">
               {CLIENT_LOGOS.map((client) => (
                 <div
@@ -128,7 +137,12 @@ export function AboutClientsSection() {
         {/* ========================================================================= */}
         {/* BOTTOM FULL-WIDTH TESTIMONIAL CARD                                        */}
         {/* ========================================================================= */}
-        <div className="w-full rounded-[24px] lg:rounded-[28px] bg-[#070707] border border-white/10 p-7 sm:p-10 lg:p-12 backdrop-blur-md shadow-[0_12px_45px_rgba(0,0,0,0.6)]">
+        <div 
+          className="w-full rounded-[24px] lg:rounded-[28px] bg-[#070707] border border-white/10 p-7 sm:p-10 lg:p-12 backdrop-blur-md shadow-[0_12px_45px_rgba(0,0,0,0.6)]"
+          data-aos="fade-up"
+          data-aos-duration="900"
+          data-aos-delay="200"
+        >
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-14">
             
             {/* Author Profile */}

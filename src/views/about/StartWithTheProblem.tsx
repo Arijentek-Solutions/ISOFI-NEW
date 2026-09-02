@@ -28,6 +28,9 @@ export function StartWithTheProblem() {
       {/* ========================================================================= */}
       <div
         data-node-id="1408:6961"
+        data-aos="fade-left"
+        data-aos-delay="200"
+        data-aos-duration="1000"
         className="absolute -right-24 sm:-right-16 md:-right-8 lg:-right-4 xl:right-2 top-[30px] sm:top-[50px] lg:top-[70px] pointer-events-none z-0 transition-transform duration-700 ease-out"
         style={{
           transform: `translate3d(${mousePos.x * 22}px, ${mousePos.y * 18}px, 0)`,
@@ -52,6 +55,9 @@ export function StartWithTheProblem() {
       {/* ========================================================================= */}
       <div
         data-node-id="1408:6962"
+        data-aos="fade-right"
+        data-aos-delay="300"
+        data-aos-duration="1000"
         className="absolute -left-28 sm:-left-20 md:-left-10 lg:-left-6 xl:left-0 bottom-[80px] sm:bottom-[120px] pointer-events-none z-0 transition-transform duration-700 ease-out"
         style={{
           transform: `translate3d(${mousePos.x * -26}px, ${mousePos.y * -20}px, 0)`,
@@ -77,7 +83,11 @@ export function StartWithTheProblem() {
       <div className="relative z-10 w-full max-w-[960px] flex flex-col items-center text-center px-4">
         <div className="w-full flex flex-col items-center relative">
           {/* Left Quote Above */}
-          <div className="w-full flex justify-start pl-2 sm:pl-6 lg:pl-10 mb-4 sm:mb-6">
+          <div 
+            className="w-full flex justify-start pl-2 sm:pl-6 lg:pl-10 mb-4 sm:mb-6"
+            data-aos="fade-right"
+            data-aos-duration="750"
+          >
             <p
               data-node-id="1408:6956"
               className="font-['Funnel_Display',sans-serif] font-medium text-[#adadad] text-[clamp(16px,1.8vw,28px)] tracking-[-0.5px] sm:tracking-[-1px] italic select-none"
@@ -87,7 +97,11 @@ export function StartWithTheProblem() {
           </div>
 
           {/* Center Eyebrow & Main Headline (Exact Same Size as Who We Are) */}
-          <div className="flex flex-col items-center gap-3 sm:gap-4 my-3 sm:my-5">
+          <div 
+            className="flex flex-col items-center gap-3 sm:gap-4 my-3 sm:my-5"
+            data-aos="fade-up"
+            data-aos-duration="800"
+          >
             <span
               data-node-id="1408:6954"
               className="font-['Funnel_Display',sans-serif] font-bold text-[14px] sm:text-[16px] text-[#D91E1E] tracking-[1.5px] uppercase"
@@ -104,7 +118,11 @@ export function StartWithTheProblem() {
           </div>
 
           {/* Right Quote Below */}
-          <div className="w-full flex justify-end pr-2 sm:pr-6 lg:pr-10 mt-4 sm:mt-6">
+          <div 
+            className="w-full flex justify-end pr-2 sm:pr-6 lg:pr-10 mt-4 sm:mt-6"
+            data-aos="fade-left"
+            data-aos-duration="750"
+          >
             <p
               data-node-id="1408:6957"
               className="font-['Funnel_Display',sans-serif] font-medium text-[#adadad] text-[clamp(16px,1.8vw,28px)] tracking-[-0.5px] sm:tracking-[-1px] italic select-none"

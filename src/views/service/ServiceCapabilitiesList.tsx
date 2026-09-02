@@ -140,7 +140,11 @@ export function ServiceCapabilitiesList() {
           {/* ========================================================================= */}
           {/* CATEGORY SECTION HEADER (Centered Title with Red Accent)                 */}
           {/* ========================================================================= */}
-          <div className="w-full max-w-[1920px] mx-auto px-6 sm:px-12 lg:px-[82px] text-center mb-12 sm:mb-16 lg:mb-20">
+          <div 
+            className="w-full max-w-[1920px] mx-auto px-6 sm:px-12 lg:px-[82px] text-center mb-12 sm:mb-16 lg:mb-20"
+            data-aos="fade-up"
+            data-aos-duration="750"
+          >
             <h2 className="font-['Funnel_Display',sans-serif] font-extrabold text-[clamp(34px,4.8vw,86px)] leading-[1.01] tracking-[-1.5px] sm:tracking-[-2.5px] lg:tracking-[-3.78px] text-black">
               <span>{category.titlePrefix}</span>
               <span className="text-[#D91E1E]">{category.titleAccent}</span>
@@ -152,10 +156,13 @@ export function ServiceCapabilitiesList() {
           {/* ========================================================================= */}
           <div className="w-full max-w-[1920px] mx-auto px-6 sm:px-12 lg:px-[110px] mb-14 sm:mb-20 lg:mb-24">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-20 gap-y-12 sm:gap-y-16">
-              {category.services.map((service) => (
+              {category.services.map((service, sIdx) => (
                 <div
                   key={service.id}
                   className="flex items-start gap-5 sm:gap-8 lg:gap-10 group"
+                  data-aos="fade-up"
+                  data-aos-delay={(sIdx % 2) * 150 + 100}
+                  data-aos-duration="800"
                 >
                   {/* Huge Monospaced / Display Number (01, 02...) */}
                   <span className="font-['Funnel_Display',sans-serif] font-bold text-[clamp(54px,5.8vw,110px)] leading-[0.88] text-black shrink-0 select-none tracking-tight">
@@ -190,7 +197,12 @@ export function ServiceCapabilitiesList() {
           {/* ========================================================================= */}
           {/* INFINITE AUTO-SCROLLING CAROUSEL: SLEEK BLANK GRAY CARDS                  */}
           {/* ========================================================================= */}
-          <div className="w-full overflow-hidden select-none relative group cursor-grab active:cursor-grabbing">
+          <div 
+            className="w-full overflow-hidden select-none relative group cursor-grab active:cursor-grabbing"
+            data-aos="fade-up"
+            data-aos-delay="200"
+            data-aos-duration="900"
+          >
             {/* Seamless Infinite Marquee Track */}
             <div className="animate-marquee-left flex items-center gap-6 sm:gap-8 lg:gap-10 py-3">
               {/* Render items twice to create seamless loop */}
