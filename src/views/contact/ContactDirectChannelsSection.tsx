@@ -50,49 +50,50 @@ export function ContactDirectChannelsSection() {
                 <Mail className="w-6 h-6 text-[#d91e1e]" />
               </div>
               <div className="flex flex-col">
-                <span className="font-['Funnel_Display',sans-serif] font-bold text-black/50 text-[12px] sm:text-[13px] tracking-[1.5px] uppercase">
+                <span className="font-['Funnel_Display',sans-serif] font-bold text-[#d91e1e] text-[12px] sm:text-[13px] tracking-[1.5px] uppercase">
                   PRIORITY SIGNAL (EMAIL)
                 </span>
                 <a
-                  href="mailto:hello@isofiniti.agency"
+                  href="mailto:hello@isofiniti.com"
                   className="font-[family-name:var(--font-onest)] font-medium text-black text-[18px] sm:text-[22px] hover:text-[#d91e1e] transition-colors"
                 >
-                  hello@isofiniti.agency
+                  hello@isofiniti.com
                 </a>
               </div>
             </div>
 
-            {/* Channel 2: HQ Location */}
-            <div className="flex items-center gap-5 sm:gap-6 group">
-              <div className="w-[64px] h-[64px] rounded-[10px] bg-white/70 border border-black/5 flex items-center justify-center shadow-sm group-hover:border-[#d91e1e]/40 transition-colors shrink-0">
-                <MapPin className="w-6 h-6 text-[#d91e1e]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-['Funnel_Display',sans-serif] font-bold text-black/50 text-[12px] sm:text-[13px] tracking-[1.5px] uppercase">
-                  HQ COORDINATES
-                </span>
-                <p className="font-[family-name:var(--font-onest)] font-medium text-black text-[17px] sm:text-[20px] leading-snug">
-                  1200 Innovation Drive, Sector 400 <br />
-                  New York, NY 10001
-                </p>
-              </div>
-            </div>
-
-            {/* Channel 3: Phone */}
+            {/* Channel 2: Phone */}
             <div className="flex items-center gap-5 sm:gap-6 group">
               <div className="w-[64px] h-[64px] rounded-[10px] bg-white/70 border border-black/5 flex items-center justify-center shadow-sm group-hover:border-[#d91e1e]/40 transition-colors shrink-0">
                 <Phone className="w-6 h-6 text-[#d91e1e]" />
               </div>
               <div className="flex flex-col">
-                <span className="font-['Funnel_Display',sans-serif] font-bold text-black/50 text-[12px] sm:text-[13px] tracking-[1.5px] uppercase">
+                <span className="font-['Funnel_Display',sans-serif] font-bold text-[#d91e1e] text-[12px] sm:text-[13px] tracking-[1.5px] uppercase">
                   VOICE PROTOCOL (PHONE)
                 </span>
                 <a
-                  href="tel:+15551234567"
+                  href="tel:+13124934155"
                   className="font-[family-name:var(--font-onest)] font-medium text-black text-[18px] sm:text-[22px] hover:text-[#d91e1e] transition-colors"
                 >
-                  +1 (555) 123-4567
+                  +1 (312) 493-4155
                 </a>
+              </div>
+            </div>
+
+            {/* Channel 3: HQ Location */}
+            <div className="flex items-start gap-5 sm:gap-6 group">
+              <div className="w-[64px] h-[64px] rounded-[10px] bg-white/70 border border-black/5 flex items-center justify-center shadow-sm group-hover:border-[#d91e1e]/40 transition-colors shrink-0 mt-0.5">
+                <MapPin className="w-6 h-6 text-[#d91e1e]" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-['Funnel_Display',sans-serif] font-bold text-[#d91e1e] text-[12px] sm:text-[13px] tracking-[1.5px] uppercase">
+                  HQ COORDINATES
+                </span>
+                <p className="font-[family-name:var(--font-onest)] font-medium text-black text-[17px] sm:text-[20px] leading-snug">
+                  30 N Gould St, STE R <br />
+                  Sheridan, Wyoming 82801 <br />
+                  United States
+                </p>
               </div>
             </div>
           </div>
