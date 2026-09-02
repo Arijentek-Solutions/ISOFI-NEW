@@ -1,4 +1,4 @@
-import AboutPage from '@/pages/about/page';
+import AboutPage from '@/views/about/page';
 
 export const metadata = {
   title: 'About | ISOFINITI — We Build What Comes Next',

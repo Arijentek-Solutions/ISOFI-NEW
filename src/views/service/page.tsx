@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
+import AOS from 'aos';
 import { Navbar } from '@/components/common/Navbar';
 import ServiceHero from './hero';
 import IdeaToIntelligentSystem from './IdeaToIntelligentSystem';
@@ -11,6 +12,13 @@ import HaveAProblemSection from './HaveAProblemSection';
 import { WovenLightHero } from '@/components/ui/woven-light-hero';
 
 export default function ServicePage() {
+  useEffect(() => {
+    AOS.refresh();
+    const timer = setTimeout(() => {
+      AOS.refresh();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <>
       <Head>

@@ -1,4 +1,4 @@
-import ContactPage from '@/pages/contact/page';
+import ContactPage from '@/views/contact/page';
 
 export const metadata = {
   title: 'Connect | ISOFINITI — Have Something Worth Building?',

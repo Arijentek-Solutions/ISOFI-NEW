@@ -10,7 +10,11 @@ export function TeamShowcase() {
       data-node-id="team-showcase"
     >
       {/* 5-Portrait Fan Deck Showcase */}
-      <div className="relative w-full max-w-[1000px] h-[340px] xs:h-[440px] sm:h-[540px] lg:h-[620px] flex items-center justify-center">
+      <div 
+        className="relative w-full max-w-[1000px] h-[340px] xs:h-[440px] sm:h-[540px] lg:h-[620px] flex items-center justify-center"
+        data-aos="fade-up"
+        data-aos-duration="900"
+      >
         <Image
           src="/images/about-team.png"
           alt="ISOFINITI Team Fan Deck"
@@ -22,7 +26,12 @@ export function TeamShowcase() {
       </div>
 
       {/* Role / Tag */}
-      <div className="mt-8 sm:mt-12 text-center flex flex-col items-center">
+      <div 
+        className="mt-8 sm:mt-12 text-center flex flex-col items-center"
+        data-aos="fade-up"
+        data-aos-delay="200"
+        data-aos-duration="750"
+      >
         <span
           data-node-id="1408:7073"
           className="font-[family-name:var(--font-chakra)] font-bold text-[18px] sm:text-[22px] lg:text-[26px] text-[#D91E1E] tracking-[2px] uppercase"

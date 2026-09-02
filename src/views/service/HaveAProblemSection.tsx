@@ -29,6 +29,9 @@ export function HaveAProblemSection() {
       {/* ========================================================================= */}
       <div
         data-node-id="1408:5442"
+        data-aos="fade-left"
+        data-aos-delay="200"
+        data-aos-duration="1000"
         className="absolute -right-16 sm:-right-8 lg:right-6 xl:right-12 top-[6%] sm:top-[8%] pointer-events-none z-0 transition-transform duration-700 ease-out"
         style={{
           transform: `translate3d(${mousePos.x * 24}px, ${mousePos.y * 20}px, 0)`,
@@ -53,6 +56,9 @@ export function HaveAProblemSection() {
       {/* ========================================================================= */}
       <div
         data-node-id="1408:5444"
+        data-aos="fade-right"
+        data-aos-delay="300"
+        data-aos-duration="1000"
         className="absolute -left-20 sm:-left-10 lg:left-6 xl:left-12 bottom-[6%] sm:bottom-[8%] pointer-events-none z-0 transition-transform duration-700 ease-out"
         style={{
           transform: `translate3d(${mousePos.x * -28}px, ${mousePos.y * -22}px, 0)`,
@@ -82,6 +88,8 @@ export function HaveAProblemSection() {
         {/* Headline */}
         <h2
           data-node-id="1408:5598"
+          data-aos="fade-up"
+          data-aos-duration="800"
           className="font-['Funnel_Display',sans-serif] font-extrabold text-white text-[clamp(36px,5.4vw,86px)] leading-[1.01] tracking-[-1.5px] sm:tracking-[-2.8px] lg:tracking-[-3.46px] text-center max-w-[960px] [word-break:break-word]"
         >
           Have A Problem Worth Solving?
@@ -90,6 +98,9 @@ export function HaveAProblemSection() {
         {/* Subtitle */}
         <p
           data-node-id="1408:5616"
+          data-aos="fade-up"
+          data-aos-delay="150"
+          data-aos-duration="800"
           className="font-[family-name:var(--font-onest)] font-normal text-white/50 text-[clamp(15px,1.35vw,24px)] leading-[1.5] sm:leading-[1.55] text-center max-w-[700px] mt-4 sm:mt-5 mb-10 sm:mb-12"
         >
           Let&apos;s turn the complexity into something that works.
@@ -98,6 +109,9 @@ export function HaveAProblemSection() {
         {/* Dual Call To Action Buttons */}
         <div
           data-node-id="1408:5617"
+          data-aos="zoom-in-up"
+          data-aos-delay="300"
+          data-aos-duration="800"
           className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full max-w-[680px]"
         >
           {/* Primary CTA: START A PROJECT ↗ */}

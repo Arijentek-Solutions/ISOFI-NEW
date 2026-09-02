@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface FAQItem {
   id: string;
@@ -60,7 +59,11 @@ export function ServiceFAQSection() {
         {/* ========================================================================= */}
         {/* SECTION HEADER: "Answers to Your Queries"                                */}
         {/* ========================================================================= */}
-        <div className="text-center flex flex-col items-center mb-16 sm:mb-20 lg:mb-24">
+        <div 
+          className="text-center flex flex-col items-center mb-16 sm:mb-20 lg:mb-24"
+          data-aos="fade-up"
+          data-aos-duration="750"
+        >
           <h2 className="font-['Funnel_Display',sans-serif] font-bold text-[clamp(34px,4.8vw,80px)] leading-[1.03] tracking-tight text-white">
             Answers to <span className="text-[#D01919]">Your Queries</span>
           </h2>
@@ -74,7 +77,12 @@ export function ServiceFAQSection() {
         {/* ========================================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* LEFT COLUMN: Thinking Robot with Glowing Red Question Mark */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end items-center relative">
+          <div 
+            className="lg:col-span-5 flex justify-center lg:justify-end items-center relative"
+            data-aos="fade-right"
+            data-aos-delay="200"
+            data-aos-duration="900"
+          >
             <div className="relative w-[280px] xs:w-[340px] sm:w-[420px] lg:w-[460px] flex items-center justify-center">
               {/* Floating Thinking Robot Character */}
               <div className="relative w-full h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
@@ -124,7 +132,12 @@ export function ServiceFAQSection() {
         </div>
 
           {/* RIGHT COLUMN: Interactive Accordion FAQs */}
-          <div className="lg:col-span-7 flex flex-col gap-3.5 sm:gap-4.5 w-full max-w-[880px]">
+          <div 
+            className="lg:col-span-7 flex flex-col gap-3.5 sm:gap-4.5 w-full max-w-[880px]"
+            data-aos="fade-left"
+            data-aos-delay="200"
+            data-aos-duration="800"
+          >
             {FAQ_ITEMS.map((item) => {
               const isOpen = openId === item.id;
 
@@ -163,22 +176,17 @@ export function ServiceFAQSection() {
                   </div>
 
                   {/* Expandable Answer Content */}
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        key="content"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden"
-                      >
-                        <p className="font-[family-name:var(--font-onest)] font-light text-zinc-300/90 text-[14px] sm:text-[16px] lg:text-[17.5px] leading-relaxed pt-3.5 sm:pt-4.5 mt-3.5 sm:mt-4 border-t border-white/[0.08]">
-                          {item.answer}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  <div
+                    className={`grid transition-all duration-300 ease-in-out ${
+                      isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="font-[family-name:var(--font-onest)] font-light text-zinc-300/90 text-[14px] sm:text-[16px] lg:text-[17.5px] leading-relaxed pt-3.5 sm:pt-4.5 mt-3.5 sm:mt-4 border-t border-white/[0.08]">
+                        {item.answer}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               );
             })}

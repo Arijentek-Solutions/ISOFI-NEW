@@ -5,6 +5,7 @@ import { motion, useAnimation } from "framer-motion";
 import * as THREE from "three";
 import { SilkBackgroundAnimation } from "@/components/ui/silk-background-animation";
 import Image from "next/image";
+import Link from "next/link";
 import { Logo } from "@/components/common/Logo";
 
 export interface WovenLightHeroProps {
@@ -100,11 +101,11 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
               MENU
             </span>
             <div className="flex flex-col gap-2 font-['Inter',sans-serif] text-[13.5px] sm:text-[15px] font-normal text-white/90">
-              <a href="/" className="hover:text-white transition-colors">Home</a>
-              <a href="/services" className="hover:text-white transition-colors">Services</a>
-              <a href="/case-studies" className="hover:text-white transition-colors">Case Studies</a>
-              <a href="/about" className="hover:text-white transition-colors">About</a>
-              <a href="/contact" className="hover:text-white transition-colors">Contacts</a>
+              <Link href="/" className="hover:text-white transition-colors">Home</Link>
+              <Link href="/services" className="hover:text-white transition-colors">Services</Link>
+              <Link href="/case-studies" className="hover:text-white transition-colors">Case Studies</Link>
+              <Link href="/about" className="hover:text-white transition-colors">About</Link>
+              <Link href="/contact" className="hover:text-white transition-colors">Contacts</Link>
             </div>
           </div>
 
@@ -175,7 +176,6 @@ const WovenCanvas: React.FC<WovenCanvasProps> = ({
     currentMount.appendChild(renderer.domElement);
 
     const mouse = new THREE.Vector2(0, 0);
-    const clock = new THREE.Clock();
 
     // --- Particle System Generation ---
     const particleCount = shape === "infinity" ? 75000 : 50000;

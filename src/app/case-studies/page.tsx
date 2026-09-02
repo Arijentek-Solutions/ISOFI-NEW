@@ -1,4 +1,4 @@
-import CaseStudiesPage from '@/pages/case-studies/page';
+import CaseStudiesPage from '@/views/case-studies/page';
 
 export const metadata = {
   title: 'Case Studies | ISOFINITI — Ideas Built Into Real Systems',

@@ -28,7 +28,11 @@ export function ContactDirectChannelsSection() {
         {/* ========================================================================= */}
         {/* LEFT COLUMN: DIRECT CHANNELS                                             */}
         {/* ========================================================================= */}
-        <div className="lg:col-span-6 flex flex-col gap-10 sm:gap-14">
+        <div 
+          className="lg:col-span-6 flex flex-col gap-10 sm:gap-14"
+          data-aos="fade-right"
+          data-aos-duration="850"
+        >
           <div className="flex flex-col gap-4">
             <h2 className="font-['Funnel_Display',sans-serif] font-extrabold text-black text-[clamp(32px,3.8vw,56px)] leading-[1.05] tracking-tight uppercase">
               DIRECT CHANNELS
@@ -97,7 +101,12 @@ export function ContactDirectChannelsSection() {
         {/* ========================================================================= */}
         {/* RIGHT COLUMN: INPUT PARAMETERS (Interactive Form)                         */}
         {/* ========================================================================= */}
-        <div className="lg:col-span-6 w-full">
+        <div 
+          className="lg:col-span-6 w-full"
+          data-aos="fade-left"
+          data-aos-duration="850"
+          data-aos-delay="200"
+        >
           <div className="w-full rounded-[14px] bg-white/85 border border-white p-7 sm:p-10 lg:p-12 shadow-[0_10px_40px_rgba(0,0,0,0.06)] backdrop-blur-lg">
             <h3 className="font-['Funnel_Display',sans-serif] font-bold text-black text-[22px] sm:text-[26px] tracking-tight uppercase mb-8">
               INPUT PARAMETERS

@@ -95,7 +95,11 @@ export function WhyIsofiExists() {
         {/* ========================================================================= */}
         {/* LEFT COLUMN: Eyebrow + Headline + Core Philosophy Narrative              */}
         {/* ========================================================================= */}
-        <div className="lg:col-span-6 xl:col-span-7 flex flex-col items-start text-left">
+        <div 
+          className="lg:col-span-6 xl:col-span-7 flex flex-col items-start text-left"
+          data-aos="fade-right"
+          data-aos-duration="850"
+        >
           {/* Eyebrow: WHY ISOFINITI EXISTS */}
           <span
             data-node-id="1408:6953"
@@ -126,6 +130,9 @@ export function WhyIsofiExists() {
         {/* ========================================================================= */}
         <div
           ref={containerRef}
+          data-aos="fade-left"
+          data-aos-duration="850"
+          data-aos-delay="200"
           className="lg:col-span-6 xl:col-span-5 relative w-full flex flex-col justify-center items-center py-6 min-h-[460px] lg:min-h-[500px] mt-[2cm]"
         >
           {/* ===================================================================== */}

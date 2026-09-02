@@ -58,7 +58,7 @@ const CASE_STUDIES: CaseStudyItem[] = [
 
 export function CaseStudiesList() {
   return (
-    <section className="w-full bg-[#efefef] text-black py-24 sm:py-36 lg:py-48 px-6 sm:px-12 lg:px-[90px] xl:px-[119px] overflow-hidden select-none">
+    <section className="w-full bg-[#efefef] text-black pt-6 sm:pt-16 lg:pt-36 pb-20 sm:pb-36 lg:pb-48 px-6 sm:px-12 lg:px-[90px] xl:px-[119px] overflow-hidden select-none">
       <div className="w-full max-w-[1540px] mx-auto flex flex-col gap-28 sm:gap-40 lg:gap-56">
         {CASE_STUDIES.map((study) => {
           return (
@@ -75,6 +75,8 @@ export function CaseStudiesList() {
                 className={`w-full lg:col-span-6 flex justify-center ${
                   study.imageOnRight ? 'lg:col-start-7' : 'lg:col-start-1'
                 }`}
+                data-aos={study.imageOnRight ? "fade-left" : "fade-right"}
+                data-aos-duration="900"
               >
                 <div className="relative w-full max-w-[740px] aspect-[757/920] rounded-[10px] bg-[#141416] border border-white/15 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.35)] group">
                   {/* Figma Exact Crimson Corner Bracket Accents (Top-Left) */}
@@ -110,6 +112,9 @@ export function CaseStudiesList() {
                 className={`w-full lg:col-span-6 flex flex-col justify-center gap-8 sm:gap-11 lg:gap-12 max-w-[660px] ${
                   study.imageOnRight ? 'lg:col-start-1' : 'lg:col-start-7'
                 }`}
+                data-aos={study.imageOnRight ? "fade-right" : "fade-left"}
+                data-aos-duration="900"
+                data-aos-delay="150"
               >
                 {/* Main Headline */}
                 <h2 className="font-['Funnel_Display',sans-serif] font-bold text-[clamp(26px,3.2vw,44px)] xl:text-[48px] leading-[1.08] tracking-tight uppercase text-black">

@@ -152,10 +152,10 @@ export function ClientTrustSection({
           >
             {[
               { label: "HOME", href: "/" },
-              { label: "SERVICES", href: "#services" },
-              { label: "CASE STUDIES", href: "#case-studies" },
-              { label: "ABOUT", href: "#about" },
-              { label: "CONNECT", href: "#connect" },
+              { label: "SERVICES", href: "/services" },
+              { label: "CASE STUDIES", href: "/case-studies" },
+              { label: "ABOUT", href: "/about" },
+              { label: "CONNECT", href: "/contact" },
             ].map((item) => (
               <Link
                 key={item.label}

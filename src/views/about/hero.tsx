@@ -6,40 +6,19 @@ import Link from 'next/link';
 export function AboutHero() {
   return (
     <section
-      className="relative w-full h-screen min-h-[620px] max-h-[1080px] bg-[#efefef] text-black overflow-hidden select-none flex items-center"
+      className="relative w-full min-h-0 lg:h-screen lg:min-h-[620px] lg:max-h-[1080px] bg-[#efefef] text-black overflow-hidden select-none flex flex-col lg:flex-row items-center justify-start lg:justify-center pt-[84px] sm:pt-[96px] pb-2 sm:pb-6 lg:py-0"
       data-node-id="1408:6914"
     >
       {/* ========================================================================= */}
-      {/* RIGHT SIDE VIDEO SHOWCASE: 3D Looping Fluid Glass Motion                 */}
+      {/* LEFT CONTENT CONTAINER (Clean responsive spacing on mobile & desktop)    */}
       {/* ========================================================================= */}
-      <div
-        className="absolute right-0 top-1/2 -translate-y-1/2 w-[52vw] max-w-[850px] h-[78vh] max-h-[780px] flex items-center justify-end pointer-events-none z-0"
-        data-node-id="1408:6915"
-        style={{
-          WebkitMaskImage:
-            "radial-gradient(ellipse 85% 85% at 65% 50%, #000 45%, transparent 88%)",
-          maskImage:
-            "radial-gradient(ellipse 85% 85% at 65% 50%, #000 45%, transparent 88%)",
-        }}
-      >
-        <video
-          src="/videos/aboutHero.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover mix-blend-color-burn pointer-events-none scale-105"
-        />
-      </div>
-
-      {/* ========================================================================= */}
-      {/* LEFT CONTENT CONTAINER (Centered within 1-screen viewport)               */}
-      {/* ========================================================================= */}
-      <div className="relative z-10 w-full px-6 sm:px-12 lg:px-[119px] pt-[64px] sm:pt-[72px] flex flex-col justify-center items-start">
+      <div className="relative z-10 w-full px-6 sm:px-12 lg:px-[119px] flex flex-col justify-center items-start lg:pt-[72px]">
         {/* Main Headline */}
         <h1
           data-node-id="1408:6917"
+          data-aos="fade-up"
+          data-aos-delay="200"
+          data-aos-duration="800"
           className="font-['Funnel_Display',sans-serif] font-extrabold text-[#000000] text-[clamp(36px,4.4vw,84px)] leading-[1.03] tracking-[-1.5px] sm:tracking-[-2px] lg:tracking-[-3.2px] max-w-[900px] [word-break:break-word]"
         >
           We Build What <br className="hidden sm:inline" />
@@ -49,7 +28,10 @@ export function AboutHero() {
         {/* Sub-description */}
         <div
           data-node-id="1408:6916"
-          className="font-[family-name:var(--font-onest)] font-light text-[rgba(0,0,0,0.55)] text-[clamp(14px,1.25vw,19.5px)] leading-[1.5] max-w-[620px] mt-4 sm:mt-5 lg:mt-6 [word-break:break-word] flex flex-col gap-2.5"
+          data-aos="fade-up"
+          data-aos-delay="300"
+          data-aos-duration="800"
+          className="font-[family-name:var(--font-onest)] font-light text-[rgba(0,0,0,0.55)] text-[clamp(14px,1.25vw,19.5px)] leading-[1.5] max-w-[620px] mt-3 sm:mt-5 lg:mt-6 [word-break:break-word] flex flex-col gap-2.5"
         >
           <p>
             ISOFINITI is a technology and digital systems company helping businesses turn complex ideas into products, platforms and intelligent systems.
@@ -62,7 +44,10 @@ export function AboutHero() {
         {/* Dual Call To Action Buttons (Side-by-Side Horizontal Row) */}
         <div
           data-node-id="1408:6918"
-          className="flex flex-row items-center gap-3.5 sm:gap-5 mt-6 sm:mt-8 lg:mt-8 flex-wrap"
+          data-aos="fade-up"
+          data-aos-delay="400"
+          data-aos-duration="800"
+          className="flex flex-row items-center gap-3.5 sm:gap-5 mt-5 sm:mt-8 lg:mt-8 flex-wrap"
         >
           {/* Primary CTA: START A PROJECT ↗ */}
           <Link
@@ -83,6 +68,33 @@ export function AboutHero() {
             TALK TO US
           </Link>
         </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* VIDEO SHOWCASE (Under content on mobile, right side on desktop)          */}
+      {/* ========================================================================= */}
+      <div
+        className="relative lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 w-full sm:w-[85vw] lg:w-[60vw] max-w-[450px] sm:max-w-[580px] lg:max-w-[1100px] h-[260px] sm:h-[360px] lg:h-[88vh] lg:max-h-[900px] flex items-center justify-center lg:justify-end pointer-events-none z-0 -mt-2 sm:mt-2 lg:mt-0 overflow-visible"
+        data-node-id="1408:6915"
+        data-aos="fade-left"
+        data-aos-delay="450"
+        data-aos-duration="1000"
+        style={{
+          WebkitMaskImage:
+            "radial-gradient(ellipse 65% 55% at 50% 50%, #000 20%, rgba(0,0,0,0.85) 42%, rgba(0,0,0,0.2) 60%, transparent 72%)",
+          maskImage:
+            "radial-gradient(ellipse 65% 55% at 50% 50%, #000 20%, rgba(0,0,0,0.85) 42%, rgba(0,0,0,0.2) 60%, transparent 72%)",
+        }}
+      >
+        <video
+          src="/videos/aboutHero.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="w-full h-full object-contain mix-blend-multiply brightness-[1.18] contrast-[1.12] pointer-events-none scale-110 sm:scale-115 lg:scale-120"
+        />
       </div>
     </section>
   );
