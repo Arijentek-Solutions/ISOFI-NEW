@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import GlassSurface from './GlassSurface';
 import { Logo } from '@/components/common/Logo';
 import { Menu, X } from 'lucide-react';
 
@@ -14,6 +13,20 @@ export function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollYRef = useRef(0);
   const pathname = usePathname();
+
+  // Clear any inline DOM styles when navigating between routes
+  useEffect(() => {
+    if (pathname !== '/') {
+      const navEl = document.getElementById('global-navbar');
+      if (navEl) {
+        navEl.style.opacity = '';
+        navEl.style.transform = '';
+        navEl.style.visibility = '';
+        navEl.style.pointerEvents = '';
+      }
+    }
+    setIsVisible(true);
+  }, [pathname]);
 
   useEffect(() => {
     let ticking = false;
@@ -66,16 +79,24 @@ export function Navbar() {
     };
 
     const handleScroll = () => {
+      const navEl = document.getElementById('global-navbar');
+      if (pathname !== '/' && navEl && navEl.style.transform) {
+        navEl.style.opacity = '';
+        navEl.style.transform = '';
+        navEl.style.visibility = '';
+        navEl.style.pointerEvents = '';
+      }
+
       const currentScrollY = window.scrollY || document.documentElement.scrollTop;
       const prevScrollY = lastScrollYRef.current;
       const diff = currentScrollY - prevScrollY;
 
       // Down scroll: hide navbar
-      if (diff > 4 && currentScrollY > 60) {
+      if (diff > 2 && currentScrollY > 40) {
         setIsVisible(false);
       }
       // Up scroll: open navbar (or when near top)
-      else if (diff < -4 || currentScrollY <= 30) {
+      else if (diff < -2 || currentScrollY <= 30) {
         setIsVisible(true);
       }
 
@@ -135,31 +156,14 @@ export function Navbar() {
 
   return (
     <header
-      className={`w-full fixed top-0 inset-x-0 z-[100] font-sans pointer-events-none transition-transform duration-350 ease-out ${
-        isVisible || isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
-      }`}
+      id="global-navbar"
+      className={`w-full fixed top-0 inset-x-0 z-[100] font-sans pointer-events-none transition-all duration-500 ease-in-out ${isVisible || isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
+        }`}
       data-node-id="239:1339"
     >
-      <div 
-        className="w-full h-[64px] lg:h-[72px] relative pointer-events-auto"
+      <div
+        className="w-full h-[64px] lg:h-[72px] relative pointer-events-auto bg-transparent"
       >
-        {/* Background layer */}
-        <GlassSurface
-          width="100%"
-          height="100%"
-          borderRadius={0}
-          isDarkMode={isDark}
-          className="absolute inset-0 z-0 rounded-none transition-all duration-500"
-          displace={0.2}
-          distortionScale={-50}
-          redOffset={0}
-          greenOffset={2}
-          blueOffset={5}
-          opacity={1}
-          mixBlendMode="normal"
-          backgroundOpacity={0}
-        />
-
         {/* Content layer */}
         <div className="w-full h-full flex items-center justify-between px-4 sm:px-6 md:px-16 lg:px-20 relative z-10 pointer-events-auto">
           {/* Brand Logo - Desktop (lg:flex) */}
@@ -217,12 +221,11 @@ export function Navbar() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`text-[12px] font-bold tracking-[0.9px] uppercase no-underline relative py-1 transition-colors duration-300 whitespace-nowrap after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-[#d91e1e] after:transition-transform after:duration-300 ${
-                    isActive
+                  className={`text-[12px] font-bold tracking-[0.9px] uppercase no-underline relative py-1 transition-colors duration-300 whitespace-nowrap after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-[#d91e1e] after:transition-transform after:duration-300 ${isActive
                       ? "text-[#d91e1e] after:scale-x-100"
                       : "after:scale-x-0 hover:after:scale-x-100 after:origin-right hover:after:origin-left " +
-                        (isDark ? "text-white hover:text-[#d91e1e]" : "text-black hover:text-[#d91e1e]")
-                  }`}
+                      (isDark ? "text-white hover:text-[#d91e1e]" : "text-black hover:text-[#d91e1e]")
+                    }`}
                 >
                   {item.label}
                 </Link>
@@ -259,13 +262,11 @@ export function Navbar() {
 
       {/* Mobile Drawer Overlay */}
       <div
-        className={`fixed inset-0 w-full h-screen ${
-          isDark ? 'bg-zinc-950/98 text-white' : 'bg-white/98 text-black'
-        } backdrop-blur-xl z-[150] flex flex-col justify-center items-center gap-10 px-6 py-20 transition-all duration-300 pointer-events-auto ${
-          isMobileMenuOpen
+        className={`fixed inset-0 w-full h-screen ${isDark ? 'bg-zinc-950/98 text-white' : 'bg-white/98 text-black'
+          } backdrop-blur-xl z-[150] flex flex-col justify-center items-center gap-10 px-6 py-20 transition-all duration-300 pointer-events-auto ${isMobileMenuOpen
             ? 'opacity-100 visible translate-y-0'
             : 'opacity-0 invisible -translate-y-5 pointer-events-none'
-        }`}
+          }`}
       >
         {/* Top Close Button inside Drawer Overlay */}
         <button
@@ -287,9 +288,8 @@ export function Navbar() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`text-2xl font-bold tracking-[1.5px] uppercase no-underline hover:text-[#d91e1e] transition-colors duration-300 ${
-                  isActive ? "text-[#d91e1e]" : isDark ? "text-white" : "text-black"
-                }`}
+                className={`text-2xl font-bold tracking-[1.5px] uppercase no-underline hover:text-[#d91e1e] transition-colors duration-300 ${isActive ? "text-[#d91e1e]" : isDark ? "text-white" : "text-black"
+                  }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.label}
