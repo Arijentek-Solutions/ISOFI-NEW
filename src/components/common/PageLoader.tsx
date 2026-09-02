@@ -4,8 +4,6 @@ import { useEffect, useState, useRef } from "react";
 
 export function PageLoader() {
   const [visible, setVisible] = useState(true);
-  const [progress, setProgress] = useState(0);
-  const [phase, setPhase] = useState("INITIALIZING");
   const [isZooming, setIsZooming] = useState(false);
   const [isFading, setIsFading] = useState(false);
   const animFrameRef = useRef<number | null>(null);
@@ -17,20 +15,6 @@ export function PageLoader() {
     const update = (now: number) => {
       const elapsed = now - startTime;
       const raw = Math.min(1, elapsed / duration);
-      // Smooth cubic-out easing
-      const eased = 1 - Math.pow(1 - raw, 2.4);
-      const val = Math.round(eased * 100);
-      setProgress(val);
-
-      if (val < 25) {
-        setPhase("INITIALIZING MATRIX");
-      } else if (val < 60) {
-        setPhase("CALIBRATING");
-      } else if (val < 90) {
-        setPhase("SPATIAL ACCELERATION");
-      } else {
-        setPhase("INTERFACE READY");
-      }
 
       if (raw < 1) {
         animFrameRef.current = requestAnimationFrame(update);
@@ -180,23 +164,6 @@ export function PageLoader() {
       `}</style>
 
       <div className={`kinetic-loader-root loader-grid-bg ${isFading ? " fading" : ""}`}>
-        {/* Precision HUD Corner Brackets */}
-        <div className="absolute top-6 left-6 flex items-center gap-3 telemetry-tag">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#D01919] animate-ping" />
-          <span>ISOFINITI // SPATIAL ARCHITECTURE</span>
-        </div>
-
-        <div className="absolute top-6 right-6 telemetry-tag hidden sm:flex items-center gap-2">
-          <span className="text-zinc-400">[</span>
-          <span className="text-zinc-700 font-semibold">SYS.LAT 44.79° N // LNG 106.95° W</span>
-          <span className="text-zinc-400">]</span>
-        </div>
-
-        <div className="absolute bottom-6 left-6 telemetry-tag hidden sm:flex items-center gap-2">
-          <span className="w-2 h-2 border-l border-b border-zinc-400 inline-block" />
-          <span>STATUS: ONLINE</span>
-        </div>
-
         {/* Center Official ISOFINITI Logo SVG (Exact brand geometry and spacing) */}
         <div className={`kinetic-hero-title${isZooming ? " zooming" : ""}`}>
           <div className="relative inline-block p-4">
@@ -297,31 +264,6 @@ export function PageLoader() {
                 <path d="M0 19.8515V0H3.83261V19.8515H0Z" fill="#0F0F11" />
               </g>
             </svg>
-          </div>
-        </div>
-
-        {/* Bottom Center Progress & Dynamic Telemetry Readout */}
-        <div
-          className={`absolute bottom-8 right-8 sm:bottom-12 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 flex flex-col items-center gap-2.5 transition-opacity duration-300 ${
-            isZooming ? "opacity-0" : "opacity-100"
-          }`}
-        >
-          {/* Dynamic Phase Readout & Numeric Counter */}
-          <div className="flex items-center justify-between w-64 px-1 font-mono">
-            <span className="text-[11px] text-zinc-500 font-medium tracking-widest uppercase">
-              {phase}
-            </span>
-            <span className="text-sm font-bold text-[#D01919] tabular-nums tracking-wider">
-              {progress.toString().padStart(3, "0")}%
-            </span>
-          </div>
-
-          {/* Micro Precision Progress Track */}
-          <div className="w-64 h-[2px] bg-zinc-300/80 relative overflow-hidden rounded-full">
-            <div
-              className="h-full bg-gradient-to-r from-[#D01919] via-[#ff3b3b] to-[#D01919] transition-all duration-75 ease-out rounded-full"
-              style={{ width: `${progress}%` }}
-            />
           </div>
         </div>
       </div>

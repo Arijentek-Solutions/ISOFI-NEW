@@ -217,19 +217,13 @@ export function HeroScrollAnimation() {
     if (lockTimeoutRef.current) clearTimeout(lockTimeoutRef.current);
   }, []);
 
-  // Auto-transition to "Innovative Tech" (Step 1) on initial website entry (desktop only)
+  // Arm the idle hint timer on initial website entry
   useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
-      return;
-    }
-    const autoIntroTimer = setTimeout(() => {
-      goToStep(1);
-    }, 250);
-
+    resetIdleTimer();
     return () => {
-      clearTimeout(autoIntroTimer);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     };
-  }, [goToStep]);
+  }, [resetIdleTimer]);
 
   // Continuous animation loop (slow smooth easing curve & multi-stage transitions)
   useEffect(() => {
